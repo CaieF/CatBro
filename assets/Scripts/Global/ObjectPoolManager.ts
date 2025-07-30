@@ -3,13 +3,17 @@ import Singleton from "../Base/Singleton";
 import { ActorTypeEnum, EntityTypeEnum } from "../Common";
 import DataManager from "./DataManager";
 
+/**
+ * 对象池管理类
+ * 负责管理游戏对象的创建和回收
+ */
 export class ObjectPoolManager extends Singleton {
     public static get Instance() {
         return super.GetInstance<ObjectPoolManager>();
     }
 
     private objectPool: Node;
-    private map: Map<EntityTypeEnum | ActorTypeEnum, Node[]>;
+    private map: Map<EntityTypeEnum, Node[]> = new Map();
 
 
     /**

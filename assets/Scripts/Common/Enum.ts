@@ -1,8 +1,20 @@
 /**
+ * 初始化类型
+ */
+export enum InitTypeEnum {
+    InitWeapon = 'InitWeapon',
+}
+
+/**
  * 输入类型枚举
  */
 export enum InputTypeEnum {
     ActorMove = 'ActorMove',
+    EnemyMove = 'EnemyMove',
+    EnemyKnockback = 'EnemyKnockback',
+    WeaponAim = 'WeaponAim',
+    WeaponMove = 'WeaponMove',
+    TimePast = 'TimePast'
 }
 
 /**
@@ -10,6 +22,21 @@ export enum InputTypeEnum {
  */
 export enum ActorTypeEnum {
     Actor01 = 'Actor01',
+    Actor02 = 'Actor02',
+}
+
+/**
+ * 敌人类型枚举
+ */
+export enum EnemyTypeEnum {
+    Enemy01 = 'Enemy01',
+}
+
+/**
+ * 武器类型枚举
+ */
+export enum WeaponTypeEnum {
+    Weapon01 = 'Weapon01',
 }
 
 /**
@@ -17,6 +44,8 @@ export enum ActorTypeEnum {
  */
 export enum EntityTypeEnum {
     Actor = 'Actor',
+    Enemy = 'Enemy',
+    Weapon = 'Weapon',
     Map = 'Map',
 }
 

@@ -1,10 +1,14 @@
-import { _decorator, AnimationClip, Component, instantiate, Node, Prefab, resources, SpriteFrame } from 'cc';
+import { _decorator, AnimationClip, Component, find, instantiate, Node, Prefab, resources, SpriteFrame, UITransform } from 'cc';
 import DataManager from '../Global/DataManager';
 import { JoyStickManager } from '../UI/JoyStickManager';
-import { ActorPrefabPathEnum, AnimationPathEnum, PrefabPathEnum, TexturePathEnum } from '../Enum';
+import { AnimationPathEnum, PrefabPathEnum, TexturePathEnum } from '../Enum';
 import { ResourceManager } from '../Global/ResourceManager';
 import { ActorManager } from '../Entity/Actor/ActorManager';
 import { EntityTypeEnum } from '../Common';
+import { EnemyManager } from '../Entity/Enemy/EnemyManager';
+import { ObjectPoolManager } from '../Global/ObjectPoolManager';
+import { FlowFieledManager } from '../Global/FlowFieledManager';
+import { RVOManager } from '../Global/RVOManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,7 +24,7 @@ export class BattleManager extends Component {
 
     protected onLoad(): void {
         DataManager.Instance.stage = this.stage = this.node.getChildByName('Stage');
-        this.ui = this.node.getChildByName('UI');
+        this.ui = find('UICanvas/UI');
 
         this.stage.removeAllChildren();
 
@@ -51,7 +55,8 @@ export class BattleManager extends Component {
         for (const type in TexturePathEnum) {
             const p = ResourceManager.Instance.loadDir(TexturePathEnum[type], SpriteFrame).then((frames) => {
                 DataManager.Instance.textureMap.set(type, frames);
-            })
+            });
+            list.push(p);
         }
 
         for (const type in AnimationPathEnum) {
@@ -71,6 +76,7 @@ export class BattleManager extends Component {
         const prefab: Prefab = DataManager.Instance.prefabMap.get(EntityTypeEnum.Map);
         const map: Node = instantiate(prefab);
         map.setParent(this.stage);
+        // FlowFieledManager.Instance.init(40, map.getComponent(UITransform).width, map.getComponent(UITransform).height,map);
     }
 
     protected update(dt: number): void {
@@ -84,6 +90,7 @@ export class BattleManager extends Component {
      */
     private render(): void {
         this.renderActors();
+        this.renderEnemies();
     }
 
     /**
@@ -92,14 +99,18 @@ export class BattleManager extends Component {
      */
     private tick(dt: number): void {
         this.tickActors(dt);
+        this.tickEnemies(dt);
+        RVOManager.Instance.tick(dt);
+        this.tickEnemiesMove(dt);
     }
 
+    //#region 渲染相关
     /**
      * 渲染角色
      */
     private renderActors(): void {
         for (const data of DataManager.Instance.state.actors) {
-            const { id, type } = data;
+            const { id } = data;
             let am: ActorManager = DataManager.Instance.actorMap.get(id);
             if (!am) {
                 const prefab: Prefab = DataManager.Instance.prefabMap.get(EntityTypeEnum.Actor);
@@ -115,6 +126,26 @@ export class BattleManager extends Component {
     }
 
     /**
+     * 渲染敌人
+     */
+    private renderEnemies(): void {
+        for (const data of DataManager.Instance.state.enemies) {
+            const { id, type } = data;
+            let em: EnemyManager = DataManager.Instance.enemyMap.get(id);
+            if (!em) {
+                const enemy: Node = ObjectPoolManager.Instance.get(EntityTypeEnum.Enemy);
+                em = enemy.getComponent(EnemyManager) || enemy.addComponent(EnemyManager);
+                DataManager.Instance.enemyMap.set(id, em);
+                em.init(data);
+            } else {
+                em.render(data);
+            }
+        }
+    }
+    //#endregion
+
+    //#region 更新相关
+    /**
      * 角色更新
      * @param dt 时间间隔
      */
@@ -125,6 +156,27 @@ export class BattleManager extends Component {
             am.tick(dt);
         }
     }
+
+    /**
+     * 敌人更新
+     * @param dt 时间间隔
+     */
+    private tickEnemies(dt: number): void {
+        for (const data of DataManager.Instance.state.enemies) {
+            const { id } = data;
+            let em: EnemyManager = DataManager.Instance.enemyMap.get(id);
+            em.tick(dt);
+        }
+    }
+
+    private tickEnemiesMove(dt: number): void {
+        for (const data of DataManager.Instance.state.enemies) {
+            const { id } = data;
+            let em: EnemyManager = DataManager.Instance.enemyMap.get(id);
+            em.tickMove(dt);
+        }
+    }
+    //#endregion
 }
 
 

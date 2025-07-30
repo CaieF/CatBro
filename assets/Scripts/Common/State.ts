@@ -1,4 +1,4 @@
-import { ActorTypeEnum, InputTypeEnum } from "./Enum";
+import { ActorTypeEnum, EnemyTypeEnum, InitTypeEnum, InputTypeEnum, WeaponTypeEnum } from "./Enum";
 
 export interface IVec2 {
     x: number;
@@ -13,6 +13,24 @@ export interface IActor {
     position: IVec2;
     direction: IVec2;
     type: ActorTypeEnum;
+    weaponList: IWeapon[];
+}
+
+export interface IWeapon {
+    id: number;
+    position: IVec2;
+    direction: IVec2;
+    type: WeaponTypeEnum;
+}
+
+/**
+ * 敌人接口
+ */
+export interface IEnemy {
+    id: number;
+    position: IVec2;
+    direction: IVec2;
+    type: EnemyTypeEnum;
 }
 
 /**
@@ -20,12 +38,28 @@ export interface IActor {
  */
 export interface IState {
     actors: IActor[];
+    enemies: IEnemy[];
+}
+
+/**
+ * 初始化接口
+ */
+export type IClientInit = IWeaponInit;
+
+/**
+ * 武器初始化
+ */
+export interface IWeaponInit {
+    id: number;
+    actorId: number;
+    type: InitTypeEnum.InitWeapon;
+    position: IVec2;
 }
 
 /**
  * 输入接口
  */
-export type IClientInput = IActorMoveInput;
+export type IClientInput = IActorMoveInput | IEnemyMoveInput | IEnemyKnockbackInput | IWeaponAimInput | IWeaponMoveInput;
 
 /**
  * 角色移动输入接口
@@ -34,5 +68,45 @@ export interface IActorMoveInput {
     id: number;
     type: InputTypeEnum.ActorMove;
     direction: IVec2;
+    dt: number;
+}
+
+/**
+ * 敌人移动输入接口
+ */
+export interface IEnemyMoveInput {
+    id: number;
+    type: InputTypeEnum.EnemyMove;
+    direction: IVec2;
+    speed: number;
+    dt: number;
+}
+
+/**
+ * 敌人击退输入接口
+ */
+export interface IEnemyKnockbackInput {
+    id: number;
+    type: InputTypeEnum.EnemyKnockback;
+    direction: IVec2;
+    force: number;
+}
+
+/**
+ * 武器瞄准输入接口
+ */
+export interface IWeaponAimInput {
+    id: number;
+    actorId: number;
+    type: InputTypeEnum.WeaponAim;
+    direction: IVec2;
+    dt: number;
+}
+
+export interface IWeaponMoveInput {
+    id: number;
+    actorId: number;
+    type: InputTypeEnum.WeaponMove;
+    position: IVec2;
     dt: number;
 }
