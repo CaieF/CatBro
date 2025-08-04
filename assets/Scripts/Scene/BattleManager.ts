@@ -1,14 +1,17 @@
-import { _decorator, AnimationClip, Component, find, instantiate, Node, Prefab, resources, SpriteFrame, UITransform } from 'cc';
+import { _decorator, AnimationClip, Component, find, instantiate, JsonAsset, Node, Prefab, resources, SpriteFrame, UITransform } from 'cc';
 import DataManager from '../Global/DataManager';
 import { JoyStickManager } from '../UI/JoyStickManager';
-import { AnimationPathEnum, PrefabPathEnum, TexturePathEnum } from '../Enum';
+import { AnimationPathEnum, ConfigPathEnum, PrefabPathEnum, TexturePathEnum } from '../Enum';
 import { ResourceManager } from '../Global/ResourceManager';
 import { ActorManager } from '../Entity/Actor/ActorManager';
-import { EntityTypeEnum } from '../Common';
+import { EntityTypeEnum, InputTypeEnum } from '../Common';
 import { EnemyManager } from '../Entity/Enemy/EnemyManager';
 import { ObjectPoolManager } from '../Global/ObjectPoolManager';
 import { FlowFieledManager } from '../Global/FlowFieledManager';
 import { RVOManager } from '../Global/RVOManager';
+import { BulletManager } from '../Entity/Bullet/BulletManager';
+import { WeaponFactory } from '../Factory/WeaponFactory';
+import { Debug } from '../Util';
 const { ccclass, property } = _decorator;
 
 /**
@@ -34,6 +37,7 @@ export class BattleManager extends Component {
     protected async start(): Promise<void> {
         await this.loadRes();
         this.initMap();
+        this.initFactory();
         this.shouldUpdate = true;
     }
 
@@ -66,6 +70,14 @@ export class BattleManager extends Component {
             list.push(p);
         }
 
+        for (const type in ConfigPathEnum) {
+            const p = ResourceManager.Instance.loadRes(ConfigPathEnum[type], JsonAsset).then((asset) => {
+                DataManager.Instance.configMap.set(type, asset);
+                Debug.Log(`load config ${ConfigPathEnum[type]} success`, DataManager.Instance.configMap);
+            })
+            list.push(p);
+        }
+
         await Promise.all(list);
     }
 
@@ -77,6 +89,13 @@ export class BattleManager extends Component {
         const map: Node = instantiate(prefab);
         map.setParent(this.stage);
         // FlowFieledManager.Instance.init(40, map.getComponent(UITransform).width, map.getComponent(UITransform).height,map);
+    }
+
+    /**
+     * 初始化工厂
+     */
+    private initFactory(): void {
+        WeaponFactory.Instance.init();
     }
 
     protected update(dt: number): void {
@@ -91,6 +110,7 @@ export class BattleManager extends Component {
     private render(): void {
         this.renderActors();
         this.renderEnemies();
+        this.renderBullets();
     }
 
     /**
@@ -102,6 +122,12 @@ export class BattleManager extends Component {
         this.tickEnemies(dt);
         RVOManager.Instance.tick(dt);
         this.tickEnemiesMove(dt);
+        // this.tickBullets(dt);
+
+        DataManager.Instance.applyInput({
+            type: InputTypeEnum.TimePast,
+            dt
+        })
     }
 
     //#region 渲染相关
@@ -130,7 +156,7 @@ export class BattleManager extends Component {
      */
     private renderEnemies(): void {
         for (const data of DataManager.Instance.state.enemies) {
-            const { id, type } = data;
+            const { id } = data;
             let em: EnemyManager = DataManager.Instance.enemyMap.get(id);
             if (!em) {
                 const enemy: Node = ObjectPoolManager.Instance.get(EntityTypeEnum.Enemy);
@@ -139,6 +165,24 @@ export class BattleManager extends Component {
                 em.init(data);
             } else {
                 em.render(data);
+            }
+        }
+    }
+
+    /**
+     * 渲染子弹
+     */
+    private renderBullets(): void {
+        for (const data of DataManager.Instance.state.bullets) {
+            const { id } = data;
+            let bm: BulletManager = DataManager.Instance.bulletMap.get(id);
+            if (!bm) {
+                const bullet: Node = ObjectPoolManager.Instance.get(EntityTypeEnum.Bullet);
+                bm = bullet.getComponent(BulletManager) || bullet.addComponent(BulletManager);
+                DataManager.Instance.bulletMap.set(id, bm);
+                bm.init(data);
+            } else {
+                bm.render(data);
             }
         }
     }
@@ -176,6 +220,14 @@ export class BattleManager extends Component {
             em.tickMove(dt);
         }
     }
+
+    // private tickBullets(dt: number): void {
+    //     for (const data of DataManager.Instance.state.bullets) {
+    //         const { id } = data;
+    //         let bm: BulletManager = DataManager.Instance.bulletMap.get(id);
+    //         bm.tick(dt);
+    //     }
+    // }
     //#endregion
 }
 

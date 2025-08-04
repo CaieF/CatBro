@@ -1,9 +1,13 @@
-import { _decorator, Sprite, Vec2 } from "cc";
+import { _decorator, Sprite, Vec2, Node } from "cc";
 import { EntityManager } from "../../Base/EntityManager";
 import DataManager from "../../Global/DataManager";
-import { IWeapon } from "../../Common";
+import { IWeapon, WeaponAttackTypeEnum } from "../../Common";
 import { WeaponStateMachine } from "./WeaponStateMachine";
 import { WeaponAttackState, WeaponIdleState } from "./State";
+import { MeleeBehavior, RangedBehavior } from "./Behavior";
+import { IWeaponBehavior } from "./IWeaponBehavior";
+import { WeaponStats } from "./WeaponStats";
+import { WeaponFactory } from "../../Factory/WeaponFactory";
 
 const { ccclass } = _decorator;
 
@@ -19,7 +23,7 @@ export class WeaponManager extends EntityManager {
     //#endregion
 
     //#region 武器状态相关变量
-    private stateMachine: WeaponStateMachine; // 武器状态机
+    public stateMachine: WeaponStateMachine; // 武器状态机
     public idleState: WeaponIdleState; // 武器空闲状态
     public attackState: WeaponAttackState; // 武器攻击状态
     //#endregion
@@ -28,7 +32,11 @@ export class WeaponManager extends EntityManager {
     public attackTimer: number; // 武器攻击计时器
     public attackInterval: number; // 武器攻击间隔
     public attackDistance: number; // 武器攻击距离
+    public behavior: IWeaponBehavior; // 武器攻击行为
+    public stats: WeaponStats; // 武器属性
     //#endregion
+
+    public point: Node; // 武器攻击点
 
     //#region Battle生命周期相关
     /**
@@ -38,8 +46,8 @@ export class WeaponManager extends EntityManager {
      */
     public init(data: IWeapon, actorId: number) {
         this.initData(data, actorId);
-        this.initAttributes();
         this.initState();
+        this.initStats(data);
     }
 
     /**
@@ -68,7 +76,7 @@ export class WeaponManager extends EntityManager {
         this.actorId = actorId;
 
         // 图片初始化
-        this.node.getComponent(Sprite).spriteFrame = DataManager.Instance.textureMap.get(data.type)[0];
+        // this.node.getComponent(Sprite).spriteFrame = DataManager.Instance.textureMap.get(data.type)[0];
         this.node.setPosition(data.position.x, data.position.y);
         this.defaultPos = new Vec2(data.position.x, data.position.y);
     }
@@ -76,10 +84,23 @@ export class WeaponManager extends EntityManager {
     /**
      * 初始化属性
      */
-    private initAttributes() {
+    private initStats(data: IWeapon) {
+        this.stats = WeaponFactory.Instance.createWeaponStats(data.type);
         this.attackTimer = 0;
-        this.attackInterval = 1;
-        this.attackDistance = 300;
+        this.attackInterval = this.stats.attackInterval;
+        this.attackDistance = this.stats.attackRange;
+
+        switch (this.stats.attackType) {
+            case WeaponAttackTypeEnum.Melee:
+                this.behavior = new MeleeBehavior(this);
+                break;
+            case WeaponAttackTypeEnum.Ranged:
+                this.behavior = new RangedBehavior(this);
+                this.point = this.node.getChildByName('Point');
+                break;
+            default:
+                break;
+        }
     }
 
     /**

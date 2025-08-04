@@ -1,14 +1,18 @@
-import { Prefab, SpriteFrame, Node, AnimationClip } from "cc";
+import { Prefab, SpriteFrame, Node, AnimationClip, Vec2, UITransform, JsonAsset } from "cc";
 import Singleton from "../Base/Singleton";
 import { ActorManager } from "../Entity/Actor/ActorManager";
 import { JoyStickManager } from "../UI/JoyStickManager";
-import { ActorTypeEnum, EnemyTypeEnum, IClientInit, IClientInput, InitTypeEnum, InputTypeEnum, IState, WeaponTypeEnum } from "../Common";
-import { clamp, Debug } from "../Util";
+import { ActorTypeEnum, BulletTypeEnum, EnemyTypeEnum, IBullet, IClientInit, IClientInput, InitTypeEnum, InputTypeEnum, IState, WeaponAttackTypeEnum, WeaponTypeEnum } from "../Common";
+import { clamp, CollisionUtil, Debug } from "../Util";
 import { EnemyManager } from "../Entity/Enemy/EnemyManager";
 import { WeaponManager } from "../Entity/Weapon/WeaponManager";
+import EventManager from "./EventManager";
+import { EntityStateEnum, EventEnum } from "../Enum";
+import { BulletManager } from "../Entity/Bullet/BulletManager";
 
 const ACTOR_SPEED = 500;    // 角色移动速度
 export const ENEMY_SPEED = 300;    // 敌人移动速度
+const BULLET_SPEED = 1800;
 const Map_WIDTH = 1665;
 const Map_HEIGHT = 1125;
 const Tag = 'DataManager';
@@ -28,11 +32,13 @@ export default class DataManager extends Singleton {
     public jm: JoyStickManager;   // 摇杆管理器
     public actorMap: Map<number, ActorManager> = new Map();   // 角色管理器映射表
     public enemyMap: Map<number, EnemyManager> = new Map();   // 敌人管理器映射表
+    public bulletMap: Map<number, BulletManager> = new Map();   // 子弹映射表
     // public weaponMap: Map<number, WeaponManager> = new Map();   // 武器管理器映射表
     public prefabMap: Map<string, Prefab> = new Map();   // 预制体映射表
     // public actorPrefabMap: Map<string, Prefab> = new Map();   // 角色预制体映射表
     public animationMap: Map<string, AnimationClip> = new Map();   // 动画映射表
     public textureMap: Map<string, SpriteFrame[]> = new Map();   // 贴图映射表
+    public configMap: Map<string, JsonAsset> = new Map();   // 配置映射表
 
     /**
      * 游戏状态
@@ -49,38 +55,47 @@ export default class DataManager extends Singleton {
                         id: 1,
                         type: WeaponTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Melee
                     },
                     {
                         id: 2,
                         type: WeaponTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Melee
                     },
                     {
                         id: 3,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Ranged,
+                        bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 4,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Ranged,
+                        bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 5,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Ranged,
+                        bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 6,
                         type: WeaponTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
-                        direction: { x: 0, y: 0 }
-                    }
+                        direction: { x: 0, y: 0 },
+                        attackType: WeaponAttackTypeEnum.Melee
+                    },
                 ]
             },
         ],
@@ -156,7 +171,9 @@ export default class DataManager extends Singleton {
                 position: { x: -400, y: 500 },
                 direction: { x: 0, y: 0 }
             },
-        ]
+        ],
+        bullets: [],
+        nextBulletId: 1,
     }
 
     /**
@@ -188,9 +205,7 @@ export default class DataManager extends Singleton {
                 // 查找对应的角色并更新状态
                 const actor = this.state.actors.find(a => a.id === id);
                 actor.direction = { x, y };
-                // actor.position.x += x * ACTOR_SPEED * dt;
                 actor.position.x = clamp(actor.position.x + x * ACTOR_SPEED * dt, -Map_WIDTH, Map_WIDTH);
-                // actor.position.y += y * ACTOR_SPEED * dt;
                 actor.position.y = clamp(actor.position.y + y * ACTOR_SPEED * dt, -Map_HEIGHT, Map_HEIGHT);
                 break;
             }
@@ -213,6 +228,8 @@ export default class DataManager extends Singleton {
 
                 enemy.position.x = clamp(enemy.position.x + x * force, -Map_WIDTH, Map_WIDTH);
                 enemy.position.y = clamp(enemy.position.y + y * force, -Map_HEIGHT, Map_HEIGHT);
+
+                EventManager.Instance.emit(EventEnum.EnemyChangeState, id, EntityStateEnum.Damage);
                 break;
             }
 
@@ -228,6 +245,59 @@ export default class DataManager extends Singleton {
                 const actor = this.state.actors.find(a => a.id === actorId);
                 const weapon = actor.weaponList.find(w => w.id === id);
                 weapon.position = { x, y }
+                break;
+            }
+            case InputTypeEnum.WeaponShoot: {
+                const { bulletType, position, direction } = input;
+                const bullet: IBullet = {
+                    id: this.state.nextBulletId++, position, direction, type: bulletType
+                }
+                this.state.bullets.push(bullet);
+                break;
+            }
+            case InputTypeEnum.TimePast: {
+                const { dt } = input;
+                const { bullets, enemies } = this.state;
+
+                for (let i = bullets.length - 1; i >= 0; i--) {
+                    const bullet = bullets[i];
+                    const bm = this.bulletMap.get(bullet.id);
+
+                    if (!bm) {
+                        continue;
+                    }
+
+                    const rotation = bm.node.eulerAngles.z * Math.PI / 180;
+                    const bulletCenter = new Vec2(bullet.position.x, bullet.position.y);
+                    const bulletSize = bm.node.getComponent(UITransform).contentSize;
+                    const bulletPoints = CollisionUtil.getRotatedRectPoints(bulletCenter, bulletSize.width, bulletSize.height, rotation);
+                    let bulletDestroyed = false;
+
+                    for (let j = enemies.length - 1; j >= 0; j--) {
+                        const enemy = enemies[j];
+                        const enemyCenter = new Vec2(enemy.position.x, enemy.position.y);
+                        const enemySize = new Vec2(100, 100);
+                        const enemyPoints = CollisionUtil.getAABBPoints(enemyCenter, enemySize.x, enemySize.y);
+                        if (CollisionUtil.isPolygonCollide(bulletPoints, enemyPoints)) {
+                            EventManager.Instance.emit(EventEnum.BulletDestory, bullet.id);
+                            EventManager.Instance.emit(EventEnum.EnemyDamage, enemy.id, bullet.direction);
+                            bullets.splice(i, 1);
+                            bulletDestroyed = true;
+                            break;
+                        }
+                    }
+
+                    if (!bulletDestroyed && Math.abs(bullet.position.x) > Map_WIDTH || Math.abs(bullet.position.y) > Map_HEIGHT) {
+                        EventManager.Instance.emit(EventEnum.BulletDestory, bullet.id);
+                        bullets.splice(i, 1);
+                        break;
+                    }
+                }
+
+                for (const bullet of bullets) {
+                    bullet.position.x = bullet.position.x + bullet.direction.x * BULLET_SPEED * dt, -Map_WIDTH, Map_WIDTH;
+                    bullet.position.y = bullet.position.y + bullet.direction.y * BULLET_SPEED * dt, -Map_HEIGHT, Map_HEIGHT;
+                }
             }
         }
     }

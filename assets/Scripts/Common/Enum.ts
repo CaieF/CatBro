@@ -14,6 +14,7 @@ export enum InputTypeEnum {
     EnemyKnockback = 'EnemyKnockback',
     WeaponAim = 'WeaponAim',
     WeaponMove = 'WeaponMove',
+    WeaponShoot = 'WeaponShoot',
     TimePast = 'TimePast'
 }
 
@@ -37,7 +38,24 @@ export enum EnemyTypeEnum {
  */
 export enum WeaponTypeEnum {
     Weapon01 = 'Weapon01',
+    Weapon02 = 'Weapon02',
 }
+
+/**
+ * 子弹类型枚举
+ */
+export enum BulletTypeEnum {
+    Bullet01 = 'Bullet01',
+}
+
+/**
+ * 武器攻击类型枚举
+ */
+export enum WeaponAttackTypeEnum {
+    Melee = 'Melee',
+    Ranged = 'Ranged',
+}
+
 
 /**
  * 实体类型枚举
@@ -45,7 +63,9 @@ export enum WeaponTypeEnum {
 export enum EntityTypeEnum {
     Actor = 'Actor',
     Enemy = 'Enemy',
-    Weapon = 'Weapon',
+    Weapon01 = 'Weapon01',
+    Weapon02 = 'Weapon02',
+    Bullet = 'Bullet',
     Map = 'Map',
 }
 
@@ -54,4 +74,8 @@ export enum EntityTypeEnum {
  */
 export enum AnimationTypeEnum {
     ScaleAnimation = 'ScaleAnimation',
+}
+
+export enum ConfigTypeEnum {
+    WeaponConfig = 'WeaponConfig'
 }

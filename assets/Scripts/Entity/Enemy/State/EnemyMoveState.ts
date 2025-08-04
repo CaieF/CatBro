@@ -68,8 +68,6 @@ export class EnemyMoveState extends EnemyState {
 
         const distance = Math.sqrt(Math.pow(this.target.position.x - this.manager.node.position.x, 2) + Math.pow(this.target.position.y - this.manager.node.position.y, 2));
         if (distance < this.stopDistance) {
-            // Debug.Log(`距离${distance}小于${this.stopDistance},停止移动`);
-            // this.manager.flowDir = new Vec2(0, 0);
             RVOManager.Instance.setPreferVelocity(this.manager.id, new Vec2(0, 0));
             return;
         }

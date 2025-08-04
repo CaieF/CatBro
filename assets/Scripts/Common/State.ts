@@ -1,4 +1,4 @@
-import { ActorTypeEnum, EnemyTypeEnum, InitTypeEnum, InputTypeEnum, WeaponTypeEnum } from "./Enum";
+import { ActorTypeEnum, BulletTypeEnum, EnemyTypeEnum, InitTypeEnum, InputTypeEnum, WeaponAttackTypeEnum, WeaponTypeEnum } from "./Enum";
 
 export interface IVec2 {
     x: number;
@@ -21,6 +21,8 @@ export interface IWeapon {
     position: IVec2;
     direction: IVec2;
     type: WeaponTypeEnum;
+    attackType: WeaponAttackTypeEnum;
+    bulletType?: BulletTypeEnum;
 }
 
 /**
@@ -33,12 +35,21 @@ export interface IEnemy {
     type: EnemyTypeEnum;
 }
 
+export interface IBullet {
+    id: number;
+    position: IVec2;
+    direction: IVec2;
+    type: BulletTypeEnum;
+}
+
 /**
  * 游戏状态接口
  */
 export interface IState {
     actors: IActor[];
     enemies: IEnemy[];
+    bullets: IBullet[];
+    nextBulletId: number;
 }
 
 /**
@@ -59,7 +70,8 @@ export interface IWeaponInit {
 /**
  * 输入接口
  */
-export type IClientInput = IActorMoveInput | IEnemyMoveInput | IEnemyKnockbackInput | IWeaponAimInput | IWeaponMoveInput;
+export type IClientInput = IActorMoveInput | IEnemyMoveInput | IEnemyKnockbackInput | IWeaponAimInput | IWeaponMoveInput | IWeaponShootInput
+ | ITimePastInput;
 
 /**
  * 角色移动输入接口
@@ -108,5 +120,17 @@ export interface IWeaponMoveInput {
     actorId: number;
     type: InputTypeEnum.WeaponMove;
     position: IVec2;
+}
+
+export interface IWeaponShootInput 
+{
+    type: InputTypeEnum.WeaponShoot;
+    bulletType: BulletTypeEnum;
+    position: IVec2;    // 武器位置
+    direction: IVec2;   // 射击方向
+}
+
+export interface ITimePastInput {
+    type: InputTypeEnum.TimePast;
     dt: number;
 }

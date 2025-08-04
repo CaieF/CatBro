@@ -4,6 +4,9 @@
  */
 export enum EventEnum {
     EnemyDamage = "EnemyDamage",    // 敌人受伤事件
+    EnemyChangeState = "EnemyChangeState",  // 敌人状态改变事件
+    BulletBorn = "BulletBorn",    // 子弹生成事件
+    BulletDestory = "BulletDestory",    // 子弹销毁事件
 }
 
 /**
@@ -23,7 +26,9 @@ export enum PrefabPathEnum {
     Map = "prefab/Map",
     Actor = "prefab/Actor",
     Enemy = "prefab/Enemy",
-    Weapon = "prefab/Weapon"
+    Weapon01 = "prefab/weapon/Weapon01",
+    Weapon02 = "prefab/weapon/Weapon02",
+    Bullet = "prefab/Bullet",
 }
 
 /**
@@ -33,7 +38,9 @@ export enum TexturePathEnum {
     Actor01 = "texture/actor/actor01",
     Actor02 = "texture/actor/actor02",
     Enemy01 = "texture/enemy/enemy01",
-    Weapon01 = "texture/weapon/weapon01",
+    // Weapon01 = "texture/weapon/weapon01",
+    // Weapon02 = "texture/weapon/weapon02",
+    Bullet01 = "texture/bullet/bullet01",
 }
 
 /**
@@ -41,4 +48,11 @@ export enum TexturePathEnum {
  */
 export enum AnimationPathEnum {
     ScaleAnimation = "animation/scaleAnimation/ScaleAnimation"
+}
+
+/**
+ * json配置文件路径
+ */
+export enum ConfigPathEnum {
+    WeaponConfig = "config/WeaponConfig",
 }

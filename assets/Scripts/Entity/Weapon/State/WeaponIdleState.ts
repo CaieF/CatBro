@@ -2,7 +2,7 @@ import { IEnemy, InputTypeEnum, IWeapon } from "../../../Common";
 import { getRelativePosition, getStagePosition, rad2Angle } from "../../../Util";
 import { WeaponState } from "../WeaponState";
 import DataManager from "../../../Global/DataManager";
-import { Vec2 } from "cc";
+import { Vec2, Vec3 } from "cc";
 
 export class WeaponIdleState extends WeaponState {
 
@@ -35,6 +35,12 @@ export class WeaponIdleState extends WeaponState {
         const rad = Math.asin(direction.y / side);
         const angle = direction.x > 0 ? rad2Angle(Math.asin(direction.y / side)) : rad2Angle(Math.asin(-direction.y / side)) + 180;
         this.manager.node.setRotationFromEuler(0, 0, angle);
+
+        if (angle > 90 || angle < -90) {
+            this.manager.node.setScale(new Vec3(1, -1, 1));
+        } else {
+            this.manager.node.setScale(new Vec3(1, 1, 1));
+        }
     }
 
     /**
@@ -77,14 +83,14 @@ export class WeaponIdleState extends WeaponState {
         if (this.target && this.targetDistance < this.manager.attackDistance && this.manager.attackTimer > this.manager.attackInterval) {
             let enemy = DataManager.Instance.enemyMap.get(this.target.id).node;
             if (enemy) {
-                const enemyToWeaponPos = getRelativePosition(enemy, this.manager.node.parent);
-                DataManager.Instance.applyInput({
-                    id: this.manager.id,
-                    actorId: this.manager.actorId,
-                    type: InputTypeEnum.WeaponMove,
-                    position: { x: enemyToWeaponPos.x, y: enemyToWeaponPos.y },
-                    dt,
-                })
+                // const enemyToWeaponPos = getRelativePosition(enemy, this.manager.node.parent);
+                // DataManager.Instance.applyInput({
+                //     id: this.manager.id,
+                //     actorId: this.manager.actorId,
+                //     type: InputTypeEnum.WeaponMove,
+                //     position: { x: enemyToWeaponPos.x, y: enemyToWeaponPos.y },
+                // })
+                this.manager.behavior.responseToAttack(enemy);
                 this.stateMachine.changeState(this.manager.attackState);
             }
         }

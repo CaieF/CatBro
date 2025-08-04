@@ -116,12 +116,12 @@ export class ActorManager extends EntityManager {
             const { id } = data;
             let wm: WeaponManager = this.weaponMap.get(id);
             if (!wm) {
-                const prefab = DataManager.Instance.prefabMap.get(EntityTypeEnum.Weapon);
+                const prefab = DataManager.Instance.prefabMap.get(data.type);
                 const weapon: Node = instantiate(prefab);
                 weapon.setParent(this.weapons);
                 // 设置每把武器，使武器位置环绕父节点 计算武器环绕父节点的位置
                 const angle = (2 * Math.PI / weapons.length) * weapons.indexOf(data);
-                const radius = 60; // 可根据需要调整半径
+                const radius = 65; // 可根据需要调整半径
                 const x = Math.cos(angle) * radius;
                 const y = Math.sin(angle) * radius;
                 DataManager.Instance.applyInit({

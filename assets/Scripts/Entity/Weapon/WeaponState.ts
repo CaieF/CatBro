@@ -19,8 +19,25 @@ export abstract class WeaponState {
         this.stateMachine = stateMachine;
     }
 
+    /**
+     * 进入状态
+     */
     public abstract enter(): void;
+
+    /**
+     * 退出状态
+     */
     public abstract exit(): void;
+
+    /**
+     * 状态更新
+     * @param dt 
+     */
     public abstract tick(dt: number): void;
+
+    /**
+     * 状态渲染
+     * @param data 武器数据
+     */
     public abstract render(data: IWeapon): void;
 }

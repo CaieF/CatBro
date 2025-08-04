@@ -3,7 +3,7 @@ import { EntityManager } from "../../Base/EntityManager";
 import { AnimationTypeEnum, IActor, IEnemy, InputTypeEnum, IVec2 } from "../../Common";
 import DataManager from "../../Global/DataManager";
 import EventManager from "../../Global/EventManager";
-import { EventEnum } from "../../Enum";
+import { EntityStateEnum, EventEnum } from "../../Enum";
 import { EnemyDamageState, EnemyMoveState } from "./State";
 import { EnemyStateMachine } from "./EnemyStateMachine";
 const { ccclass, property } = _decorator;
@@ -37,7 +37,8 @@ export class EnemyManager extends EntityManager {
         this.initComponent(data);
         this.initState();
 
-        EventManager.Instance.on(EventEnum.EnemyDamage, this.handleEnemyDamage, this)
+        EventManager.Instance.on(EventEnum.EnemyDamage, this.handleEnemyDamage, this);
+        EventManager.Instance.on(EventEnum.EnemyChangeState, this.handleEnemyChangeState, this);
     }
 
     /**
@@ -45,6 +46,7 @@ export class EnemyManager extends EntityManager {
      */
     public recycle(): void {
         EventManager.Instance.off(EventEnum.EnemyDamage, this.handleEnemyDamage, this)
+        EventManager.Instance.off(EventEnum.EnemyChangeState, this.handleEnemyChangeState, this)
     }
 
     /**
@@ -110,8 +112,23 @@ export class EnemyManager extends EntityManager {
             id: this.id,
             type: InputTypeEnum.EnemyKnockback,
             direction: direction,
-            force: 200,
+            force: 10,
         })
-        this.stateMachine.changeState(this.damageState);  // 切换到受伤状态
+        // this.stateMachine.changeState(this.damageState);  // 切换到受伤状态
+    }
+
+    private handleEnemyChangeState(id: number, state: EntityStateEnum): void {
+        if (id !== this.id) return;
+
+        switch (state) {
+            case EntityStateEnum.Move:
+                this.stateMachine.changeState(this.moveState);  // 切换到移动状态
+                break;
+            case EntityStateEnum.Damage:
+                this.stateMachine.changeState(this.damageState);  // 切换到受伤状态
+                break;
+            default:
+                break;
+        }
     }
 }
