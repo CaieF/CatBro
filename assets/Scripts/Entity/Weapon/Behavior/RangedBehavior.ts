@@ -33,13 +33,13 @@ export class RangedBehavior implements IWeaponBehavior {
     }
     
     public enterAttackState(): void {
-        Debug.Log(Tag, '进入远程攻击状态');
+        // Debug.Log(Tag, '进入远程攻击状态');
         this.stateMachine.changeState(this.manager.idleState);
 
     }
 
     public exitAttackState(): void {
-        Debug.Log(Tag, '退出远程攻击状态');
+        // Debug.Log(Tag, '退出远程攻击状态');
     }
 
     public tickAttackState(dt: number): void {}

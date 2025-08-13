@@ -30,7 +30,7 @@ export class RVOManager extends Singleton {
     /**
      * 注册/更新代理
      */
-    public updateAgentPosition(id: number, position: Vec2) {
+    public updateAgentPosition(id: number, position: Vec2, speed: number) {
         let agent = this.agents.get(id);
         if (!agent) {
             agent = {
@@ -39,7 +39,8 @@ export class RVOManager extends Singleton {
                 velocity: new Vec2(0, 0),
                 prefVelocity: new Vec2(0, 0),
                 radius: 120,
-                maxSpeed: randomRange(ENEMY_SPEED * 0.8, ENEMY_SPEED * 1.2),
+                maxSpeed: speed,
+                // maxSpeed: randomRange(ENEMY_SPEED * 0.8, ENEMY_SPEED * 1.2),
             };
             this.agents.set(id, agent);
         } else {

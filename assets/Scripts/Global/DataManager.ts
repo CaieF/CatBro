@@ -2,7 +2,7 @@ import { Prefab, SpriteFrame, Node, AnimationClip, Vec2, UITransform, JsonAsset 
 import Singleton from "../Base/Singleton";
 import { ActorManager } from "../Entity/Actor/ActorManager";
 import { JoyStickManager } from "../UI/JoyStickManager";
-import { ActorTypeEnum, BulletTypeEnum, EnemyTypeEnum, IBullet, IClientInit, IClientInput, InitTypeEnum, InputTypeEnum, IState, WeaponAttackTypeEnum, WeaponTypeEnum } from "../Common";
+import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, IBullet, IClientInit, IClientInput, InitTypeEnum, InputTypeEnum, IState, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "../Common";
 import { clamp, CollisionUtil, Debug } from "../Util";
 import { EnemyManager } from "../Entity/Enemy/EnemyManager";
 import { WeaponManager } from "../Entity/Weapon/WeaponManager";
@@ -10,7 +10,7 @@ import EventManager from "./EventManager";
 import { EntityStateEnum, EventEnum } from "../Enum";
 import { BulletManager } from "../Entity/Bullet/BulletManager";
 
-const ACTOR_SPEED = 500;    // 角色移动速度
+const ACTOR_SPEED = 450;    // 角色移动速度
 export const ENEMY_SPEED = 300;    // 敌人移动速度
 const BULLET_SPEED = 1800;
 const Map_WIDTH = 1665;
@@ -47,54 +47,48 @@ export default class DataManager extends Singleton {
         actors: [
             {
                 id: 1,
-                type: ActorTypeEnum.Actor01,
+                type: ActorEntityTypeEnum.Actor02,
                 position: { x: 0, y: 0 },
                 direction: { x: 0, y: 0 },
                 weaponList: [
                     {
                         id: 1,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponEntityTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Melee
                     },
                     {
                         id: 2,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponEntityTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Melee
                     },
                     {
                         id: 3,
-                        type: WeaponTypeEnum.Weapon02,
+                        type: WeaponEntityTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Ranged,
                         bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 4,
-                        type: WeaponTypeEnum.Weapon02,
+                        type: WeaponEntityTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Ranged,
                         bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 5,
-                        type: WeaponTypeEnum.Weapon02,
+                        type: WeaponEntityTypeEnum.Weapon02,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Ranged,
                         bulletType: BulletTypeEnum.Bullet01,
                     },
                     {
                         id: 6,
-                        type: WeaponTypeEnum.Weapon01,
+                        type: WeaponEntityTypeEnum.Weapon01,
                         position: { x: 0, y: 0 },
                         direction: { x: 0, y: 0 },
-                        attackType: WeaponAttackTypeEnum.Melee
                     },
                 ]
             },
@@ -102,72 +96,72 @@ export default class DataManager extends Singleton {
         enemies: [
             {
                 id: 1,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 500, y: 500 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 2,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -500, y: -500 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 3,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 1000, y: 1000 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 4,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -1000, y: -1000 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 5,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 500, y: -500 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 6,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -500, y: 500 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 7,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 300, y: 300 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 8,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -300, y: -300 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 9,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 8000, y: 8000 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 10,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -800, y: -800 },
                 direction: { x: 0, y: 0 }
             },{
                 id: 11,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: 400, y: -500 },
                 direction: { x: 0, y: 0 }
             },
             {
                 id: 12,
-                type: EnemyTypeEnum.Enemy01,
+                type: EnemyEntityTypeEnum.Enemy01,
                 position: { x: -400, y: 500 },
                 direction: { x: 0, y: 0 }
             },

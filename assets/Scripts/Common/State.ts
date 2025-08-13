@@ -1,4 +1,4 @@
-import { ActorTypeEnum, BulletTypeEnum, EnemyTypeEnum, InitTypeEnum, InputTypeEnum, WeaponAttackTypeEnum, WeaponTypeEnum } from "./Enum";
+import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, InitTypeEnum, InputTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "./Enum";
 
 export interface IVec2 {
     x: number;
@@ -12,7 +12,7 @@ export interface IActor {
     id: number;
     position: IVec2;
     direction: IVec2;
-    type: ActorTypeEnum;
+    type: ActorEntityTypeEnum;
     weaponList: IWeapon[];
 }
 
@@ -20,8 +20,7 @@ export interface IWeapon {
     id: number;
     position: IVec2;
     direction: IVec2;
-    type: WeaponTypeEnum;
-    attackType: WeaponAttackTypeEnum;
+    type: WeaponEntityTypeEnum;
     bulletType?: BulletTypeEnum;
 }
 
@@ -32,7 +31,7 @@ export interface IEnemy {
     id: number;
     position: IVec2;
     direction: IVec2;
-    type: EnemyTypeEnum;
+    type: EnemyEntityTypeEnum;
 }
 
 export interface IBullet {

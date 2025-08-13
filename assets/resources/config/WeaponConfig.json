@@ -1,22 +1,22 @@
 {
     "Weapon01": {
         "name": "木棍",
-        "baseDamage": "3",
-        "meleeAddDamage": "1",
-        "rangedAddDamage": "0",
-        "elementAddDamage": "0",
-        "attackInterval": "0.1",
-        "attackRange": "200",
+        "baseDamage": 3,
+        "meleeAddDamage": 1,
+        "rangedAddDamage": 0,
+        "elementAddDamage": 0,
+        "attackInterval": 0.1,
+        "attackRange": 200,
         "attackType": "Melee"
     },
     "Weapon02": {
         "name": "手枪",
-        "baseDamage": "5",
-        "meleeAddDamage": "0",
-        "rangedAddDamage": "2",
-        "elementAddDamage": "0",
-        "attackInterval": "0.5",
-        "attackRange": "800",
+        "baseDamage": 5,
+        "meleeAddDamage": 0,
+        "rangedAddDamage": 2,
+        "elementAddDamage": 0,
+        "attackInterval": 0.5,
+        "attackRange": 800,
         "attackType": "Ranged"
     }
 }

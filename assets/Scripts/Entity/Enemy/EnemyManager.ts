@@ -6,6 +6,8 @@ import EventManager from "../../Global/EventManager";
 import { EntityStateEnum, EventEnum } from "../../Enum";
 import { EnemyDamageState, EnemyMoveState } from "./State";
 import { EnemyStateMachine } from "./EnemyStateMachine";
+import { EnemyStats } from "./EnemyStats";
+import { EnemyFactory } from "../../Factory/EnemyFactory";
 const { ccclass, property } = _decorator;
 
 const Tag = 'EnemyManager';
@@ -21,6 +23,7 @@ export class EnemyManager extends EntityManager {
     
     public id: number;  // 角色ID
     public flowDir: Vec2;  // 流动方向
+    public stats: EnemyStats;   // 敌人属性
 
     //#region 状态相关变量 
     private stateMachine: EnemyStateMachine;  // 状态机
@@ -75,6 +78,8 @@ export class EnemyManager extends EntityManager {
         this.id = data.id;
         this.node.setPosition(data.position.x, data.position.y);
         this.flowDir = new Vec2(0, 0);
+
+        this.stats = EnemyFactory.Instance.createEnemyStats(data.type, 1);
     }
 
     private initComponent(data: IEnemy): void {

@@ -12,6 +12,8 @@ import { RVOManager } from '../Global/RVOManager';
 import { BulletManager } from '../Entity/Bullet/BulletManager';
 import { WeaponFactory } from '../Factory/WeaponFactory';
 import { Debug } from '../Util';
+import { ActorFactory } from '../Factory/ActorFactory';
+import { EnemyFactory } from '../Factory/EnemyFactory';
 const { ccclass, property } = _decorator;
 
 /**
@@ -41,6 +43,7 @@ export class BattleManager extends Component {
         this.shouldUpdate = true;
     }
 
+    //#region 初始化相关
     /**
      * 在update前进行资源加载
      */
@@ -96,7 +99,10 @@ export class BattleManager extends Component {
      */
     private initFactory(): void {
         WeaponFactory.Instance.init();
+        ActorFactory.Instance.init();
+        EnemyFactory.Instance.init();
     }
+    //#endregion
 
     protected update(dt: number): void {
         if (!this.shouldUpdate) return;
@@ -220,15 +226,6 @@ export class BattleManager extends Component {
             em.tickMove(dt);
         }
     }
-
-    // private tickBullets(dt: number): void {
-    //     for (const data of DataManager.Instance.state.bullets) {
-    //         const { id } = data;
-    //         let bm: BulletManager = DataManager.Instance.bulletMap.get(id);
-    //         bm.tick(dt);
-    //     }
-    // }
-    //#endregion
 }
 
 

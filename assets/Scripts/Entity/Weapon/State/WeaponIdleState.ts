@@ -1,5 +1,5 @@
 import { IEnemy, InputTypeEnum, IWeapon } from "../../../Common";
-import { getRelativePosition, getStagePosition, rad2Angle } from "../../../Util";
+import { Debug, getRelativePosition, getStagePosition, rad2Angle } from "../../../Util";
 import { WeaponState } from "../WeaponState";
 import DataManager from "../../../Global/DataManager";
 import { Vec2, Vec3 } from "cc";
@@ -80,16 +80,9 @@ export class WeaponIdleState extends WeaponState {
      * 变为攻击敌人状态
      */
     private changeToAttack(dt: number) {
-        if (this.target && this.targetDistance < this.manager.attackDistance && this.manager.attackTimer > this.manager.attackInterval) {
+        if (this.target && this.targetDistance < this.manager.stats.finalRange && this.manager.attackTimer > this.manager.stats.attackInterval) {
             let enemy = DataManager.Instance.enemyMap.get(this.target.id).node;
             if (enemy) {
-                // const enemyToWeaponPos = getRelativePosition(enemy, this.manager.node.parent);
-                // DataManager.Instance.applyInput({
-                //     id: this.manager.id,
-                //     actorId: this.manager.actorId,
-                //     type: InputTypeEnum.WeaponMove,
-                //     position: { x: enemyToWeaponPos.x, y: enemyToWeaponPos.y },
-                // })
                 this.manager.behavior.responseToAttack(enemy);
                 this.stateMachine.changeState(this.manager.attackState);
             }

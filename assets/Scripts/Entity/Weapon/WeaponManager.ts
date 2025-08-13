@@ -8,6 +8,7 @@ import { MeleeBehavior, RangedBehavior } from "./Behavior";
 import { IWeaponBehavior } from "./IWeaponBehavior";
 import { WeaponStats } from "./WeaponStats";
 import { WeaponFactory } from "../../Factory/WeaponFactory";
+import { ActorManager } from "../Actor/ActorManager";
 
 const { ccclass } = _decorator;
 
@@ -19,6 +20,7 @@ export class WeaponManager extends EntityManager {
     //#region 武器数据相关变量
     public id: number; // 武器ID
     public actorId: number; // 武器所属角色ID
+    public am: ActorManager; // 武器所属角色
     public defaultPos: Vec2; // 默认位置
     //#endregion
 
@@ -30,8 +32,6 @@ export class WeaponManager extends EntityManager {
 
     //#region 武器属性相关变量
     public attackTimer: number; // 武器攻击计时器
-    public attackInterval: number; // 武器攻击间隔
-    public attackDistance: number; // 武器攻击距离
     public behavior: IWeaponBehavior; // 武器攻击行为
     public stats: WeaponStats; // 武器属性
     //#endregion
@@ -74,9 +74,7 @@ export class WeaponManager extends EntityManager {
     private initData(data: IWeapon, actorId: number) {
         this.id = data.id;
         this.actorId = actorId;
-
-        // 图片初始化
-        // this.node.getComponent(Sprite).spriteFrame = DataManager.Instance.textureMap.get(data.type)[0];
+        this.am = DataManager.Instance.actorMap.get(actorId);
         this.node.setPosition(data.position.x, data.position.y);
         this.defaultPos = new Vec2(data.position.x, data.position.y);
     }
@@ -85,22 +83,9 @@ export class WeaponManager extends EntityManager {
      * 初始化属性
      */
     private initStats(data: IWeapon) {
-        this.stats = WeaponFactory.Instance.createWeaponStats(data.type);
+        this.stats = WeaponFactory.Instance.createWeaponStats(data.type, this.am.stats);
         this.attackTimer = 0;
-        this.attackInterval = this.stats.attackInterval;
-        this.attackDistance = this.stats.attackRange;
-
-        switch (this.stats.attackType) {
-            case WeaponAttackTypeEnum.Melee:
-                this.behavior = new MeleeBehavior(this);
-                break;
-            case WeaponAttackTypeEnum.Ranged:
-                this.behavior = new RangedBehavior(this);
-                this.point = this.node.getChildByName('Point');
-                break;
-            default:
-                break;
-        }
+        this.behavior = WeaponFactory.Instance.createWeaponBehavior(this.stats.attackType, this);
     }
 
     /**

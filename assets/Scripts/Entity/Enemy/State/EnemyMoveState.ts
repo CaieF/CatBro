@@ -64,7 +64,7 @@ export class EnemyMoveState extends EnemyState {
     private setPreDir() {
         const worldPos = this.manager.node.worldPosition;
         const worldPos2D = new Vec2(worldPos.x, worldPos.y);
-        RVOManager.Instance.updateAgentPosition(this.manager.id, worldPos2D);
+        RVOManager.Instance.updateAgentPosition(this.manager.id, worldPos2D, this.manager.stats.speed);
 
         const distance = Math.sqrt(Math.pow(this.target.position.x - this.manager.node.position.x, 2) + Math.pow(this.target.position.y - this.manager.node.position.y, 2));
         if (distance < this.stopDistance) {

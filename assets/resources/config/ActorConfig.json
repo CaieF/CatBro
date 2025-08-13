@@ -1,0 +1,18 @@
+{
+    "Actor01": {
+        "name": "橘猫",
+        "modifiers": [
+            { "type": "StatModifier", "stat": "maxHealth", "value": 5, "description": "最大生命值+5" },
+            { "type": "StatModifier", "stat": "speed", "value": 5, "description": "速度+5%" },
+            { "type": "StatModifier", "stat": "harvest", "value": 8, "description": "收获+8" }
+        ]
+    },
+    "Actor02": {
+        "name": "黑猫",
+        "modifiers": [
+            { "type": "StatModifier", "stat": "range", "value": 50, "description": "范围+50" },
+            { "type": "MultiModifier", "stat": "rangedDamage", "value": 50, "description": "远程伤害修改增加50%" },
+            { "type": "MultiModifier", "stat": "maxHealth", "value": -25, "description": "最大生命值修改减少25" }
+        ]
+    }
+}

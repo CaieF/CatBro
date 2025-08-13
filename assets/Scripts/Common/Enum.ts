@@ -19,24 +19,24 @@ export enum InputTypeEnum {
 }
 
 /**
- * 角色类型枚举
+ * 角色实体类型枚举
  */
-export enum ActorTypeEnum {
+export enum ActorEntityTypeEnum {
     Actor01 = 'Actor01',
     Actor02 = 'Actor02',
 }
 
 /**
- * 敌人类型枚举
+ * 敌人实体类型枚举
  */
-export enum EnemyTypeEnum {
+export enum EnemyEntityTypeEnum {
     Enemy01 = 'Enemy01',
 }
 
 /**
- * 武器类型枚举
+ * 武器实体类型枚举
  */
-export enum WeaponTypeEnum {
+export enum WeaponEntityTypeEnum {
     Weapon01 = 'Weapon01',
     Weapon02 = 'Weapon02',
 }
@@ -76,6 +76,21 @@ export enum AnimationTypeEnum {
     ScaleAnimation = 'ScaleAnimation',
 }
 
+/**
+ * 配置类型枚举
+ */
 export enum ConfigTypeEnum {
-    WeaponConfig = 'WeaponConfig'
+    WeaponConfig = 'WeaponConfig',
+    ActorConfig = 'ActorConfig',
+    EnemyConfig = 'EnemyConfig',
+}
+
+/**
+ * 取整数类型枚举
+ */
+export enum RoundTypeEnum {
+    None,    // 不取整
+    Floor,  // 向下取整
+    Ceil,   // 向上取整
+    Round,  // 四舍五入
 }

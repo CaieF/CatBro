@@ -1,6 +1,6 @@
 import { instantiate, Node } from "cc";
 import Singleton from "../Base/Singleton";
-import { ActorTypeEnum, EntityTypeEnum } from "../Common";
+import { ActorEntityTypeEnum, EntityTypeEnum } from "../Common";
 import DataManager from "./DataManager";
 
 /**

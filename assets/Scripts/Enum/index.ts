@@ -20,6 +20,14 @@ export enum EntityStateEnum {
 }
 
 /**
+ * 修改类型枚举
+ */
+export enum ModifierTypeEnum {
+    StatModifier = "StatModifier",
+    MultiModifier = "MultiModifier"
+}
+
+/**
  * 预制体路径
  */
 export enum PrefabPathEnum {
@@ -55,4 +63,6 @@ export enum AnimationPathEnum {
  */
 export enum ConfigPathEnum {
     WeaponConfig = "config/WeaponConfig",
+    ActorConfig = "config/ActorConfig",
+    EnemyConfig = "config/EnemyConfig",
 }

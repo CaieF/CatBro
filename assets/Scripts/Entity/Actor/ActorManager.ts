@@ -5,6 +5,8 @@ import { EntityManager } from '../../Base/EntityManager';
 import { WeaponManager } from '../Weapon/WeaponManager';
 import { ActorStateMachine } from './ActorStateMachin';
 import { ActorIdleState, ActorMoveState } from './State';
+import { ActorStats } from './ActorStats';
+import { ActorFactory } from '../../Factory/ActorFactory';
 const { ccclass, property } = _decorator;
 
 /**
@@ -28,6 +30,8 @@ export class ActorManager extends EntityManager {
     public idleState: ActorIdleState;   // 待机状态
     public moveState: ActorMoveState;   // 移动状态
     //#endregion
+
+    public stats: ActorStats;  // 角色属性
 
     public id: number;  // 角色ID
 
@@ -73,6 +77,7 @@ export class ActorManager extends EntityManager {
             DataManager.Instance.myPlayer = this.node;
         }
         this.node.setPosition(data.position.x, data.position.y);
+        this.stats = ActorFactory.Instance.createActorStas(data.type);
     }
 
     /**
