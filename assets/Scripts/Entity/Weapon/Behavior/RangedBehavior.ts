@@ -28,7 +28,8 @@ export class RangedBehavior implements IWeaponBehavior {
             type: InputTypeEnum.WeaponShoot,
             bulletType: BulletTypeEnum.Bullet01,
             position: weaponStagePos,
-            direction: { x, y }
+            direction: { x, y },
+            damage: this.manager.stats.finalDamage,
         })
     }
     

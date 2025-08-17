@@ -85,7 +85,7 @@ export class MeleeBehavior implements IWeaponBehavior {
             const enemySize = new Size(100, 100);
             const enemyPoints = CollisionUtil.getAABBPoints(enemyCenter, enemySize.width, enemySize.height);
             if (CollisionUtil.isPolygonCollide(weaponPoints, enemyPoints)) {
-                EventManager.Instance.emit(EventEnum.EnemyDamage, enemy.id, direction);
+                EventManager.Instance.emit(EventEnum.EnemyDamage, enemy.id, this.manager.stats.finalDamage, direction);
             }
         }
     }

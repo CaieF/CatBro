@@ -13,10 +13,12 @@ export class BulletManager extends EntityManager {
     
     public type: BulletTypeEnum;
     private id: number;
+    private damage: number;
 
     public init(data: IBullet): void {
         this.id = data.id;
         this.type = data.type;
+        this.damage = data.damage;
         
         this.node.getComponent(Sprite).spriteFrame = DataManager.Instance.textureMap.get(this.type)[0];
         this.node.active = false;

@@ -3,6 +3,8 @@ import { AnimationTypeEnum, IActor, IEnemy, InputTypeEnum } from "../../../Commo
 import DataManager, { ENEMY_SPEED } from "../../../Global/DataManager";
 import { EnemyState } from "../EnemyState";
 import { RVOManager } from "../../../Global/RVOManager";
+import EventManager from "../../../Global/EventManager";
+import { EventEnum } from "../../../Enum";
 
 export class EnemyMoveState extends EnemyState {
     private target: IActor;
@@ -66,9 +68,13 @@ export class EnemyMoveState extends EnemyState {
         const worldPos2D = new Vec2(worldPos.x, worldPos.y);
         RVOManager.Instance.updateAgentPosition(this.manager.id, worldPos2D, this.manager.stats.speed);
 
+        if (!this.target) {
+            return;
+        }
         const distance = Math.sqrt(Math.pow(this.target.position.x - this.manager.node.position.x, 2) + Math.pow(this.target.position.y - this.manager.node.position.y, 2));
         if (distance < this.stopDistance) {
             RVOManager.Instance.setPreferVelocity(this.manager.id, new Vec2(0, 0));
+            EventManager.Instance.emit(EventEnum.ActorDamage, this.target.id, this.manager.stats.damage);
             return;
         }
 

@@ -1,6 +1,8 @@
 import { randomRangeInt } from "cc";
 import { IEnemyConfig } from "../../Factory/EnemyFactory";
+import { Debug } from "../../Util";
 
+const Tag = 'EnemyStats';
 /**
  * 敌人属性类
  */
@@ -25,5 +27,6 @@ export class EnemyStats {
         this.dropMaterial = config.dropMaterial;
         this.dropConsimable = config.dropConsimable;
         this.dropChest = config.dropChest;
+        Debug.Log(Tag, `创建敌人${this.name}，生命值为${this.helath}，伤害值为${this.damage}，速度值为${this.speed}`);
     }
 }

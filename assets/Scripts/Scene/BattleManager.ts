@@ -116,6 +116,7 @@ export class BattleManager extends Component {
     private render(): void {
         this.renderActors();
         this.renderEnemies();
+        
         this.renderBullets();
     }
 

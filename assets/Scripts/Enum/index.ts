@@ -3,6 +3,7 @@
  * 事件枚举
  */
 export enum EventEnum {
+    ActorDamage = "ActorDamage",    // 角色受伤事件
     EnemyDamage = "EnemyDamage",    // 敌人受伤事件
     EnemyChangeState = "EnemyChangeState",  // 敌人状态改变事件
     BulletBorn = "BulletBorn",    // 子弹生成事件
@@ -17,6 +18,7 @@ export enum EntityStateEnum {
     Move = "Move",
     Damage = "Damage",
     Attack = "Attack",
+    Dead = "Dead",
 }
 
 /**
@@ -55,7 +57,8 @@ export enum TexturePathEnum {
  * 动画路径
  */
 export enum AnimationPathEnum {
-    ScaleAnimation = "animation/scaleAnimation/ScaleAnimation"
+    ScaleAnimation = "animation/scaleAnimation/ScaleAnimation",
+    DeathAnimation = "animation/deathAnimation/DeathAnimation"
 }
 
 /**

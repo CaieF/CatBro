@@ -33,6 +33,7 @@ export class ActorMoveState extends ActorState {
 
         if (direction.x !== 0) {
             this.manager.sprite.setScale(direction.x > 0 ? 1 : -1, this.manager.sprite.scale.y);
+            this.manager.facingRight = direction.x > 0;
         }
     }
 }

@@ -1,4 +1,4 @@
-import { _decorator, Animation, instantiate, Node, Sprite } from 'cc';
+import { _decorator, Animation, Color, instantiate, Node, Sprite, tween, Tween } from 'cc';
 import { AnimationTypeEnum, EntityTypeEnum, IActor, InitTypeEnum, IWeapon } from '../../Common';
 import DataManager from '../../Global/DataManager';
 import { EntityManager } from '../../Base/EntityManager';
@@ -7,6 +7,10 @@ import { ActorStateMachine } from './ActorStateMachin';
 import { ActorIdleState, ActorMoveState } from './State';
 import { ActorStats } from './ActorStats';
 import { ActorFactory } from '../../Factory/ActorFactory';
+import EventManager from '../../Global/EventManager';
+import { EventEnum } from '../../Enum';
+import { ActorDeadState } from './State/ActorDeadState';
+import { Debug } from '../../Util';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,7 +24,7 @@ export class ActorManager extends EntityManager {
     public sprite: Node;  // 角色图片节点
 
     //#region 武器相关变量
-    private weapons: Node;  // 武器父节点
+    public weapons: Node;  // 武器父节点
     private weaponMap: Map<number, WeaponManager> = new Map();  // 武器管理器
     private weaponList: IWeapon[] = [];  // 武器数据
     //#endregion
@@ -29,9 +33,13 @@ export class ActorManager extends EntityManager {
     private stateMachine: ActorStateMachine;  // 状态机
     public idleState: ActorIdleState;   // 待机状态
     public moveState: ActorMoveState;   // 移动状态
+    public deadState: ActorDeadState;   // 死亡状态
+    public facingRight: boolean;
     //#endregion
 
     public stats: ActorStats;  // 角色属性
+    private invincibleTime: number = 0.3;  // 受击无敌时间
+    private invincibleTimer: number = 0;  // 受击无敌计时器
 
     public id: number;  // 角色ID
 
@@ -44,6 +52,8 @@ export class ActorManager extends EntityManager {
         this.initComponent(data);
         this.initState();
         this.initWeapons(data.weaponList);
+
+        EventManager.Instance.on(EventEnum.ActorDamage, this.handleActorDamage, this);
     }
 
     /**
@@ -60,8 +70,16 @@ export class ActorManager extends EntityManager {
      * @param dt 时间间隔
      */
     public tick(dt: number): void {
+        this.invincibleTimer -= dt;
+        // if (this.invincibleTimer <= 0) {
+        //     this.sprite.getComponent(Sprite).color = new Color(255, 255, 255);
+        // }
         this.stateMachine.currentState?.tick(dt);
         this.tickWeapons(dt);
+    }
+
+    protected onDestroy(): void {
+        EventManager.Instance.off(EventEnum.ActorDamage, this.handleActorDamage, this);
     }
     //#endregion
 
@@ -94,11 +112,14 @@ export class ActorManager extends EntityManager {
         this.am = this.sprite.getComponent(Animation);
         if (!this.am) {
             this.am = this.sprite.addComponent(Animation);
-            let clip = DataManager.Instance.animationMap.get(AnimationTypeEnum.ScaleAnimation);
-            // this.am.addClip(clip);
-            this.am.defaultClip = clip;
-            this.am.play();
+            let scaleClip = DataManager.Instance.animationMap.get(AnimationTypeEnum.ScaleAnimation);
+            let deathClip = DataManager.Instance.animationMap.get(AnimationTypeEnum.DeathAnimation);
+            this.am.addClip(scaleClip);
+            this.am.addClip(deathClip);
+            // this.am.defaultClip = clip;
+            // this.am.play();
         }
+        this.am.play(AnimationTypeEnum.ScaleAnimation);
     }
 
     /**
@@ -108,6 +129,7 @@ export class ActorManager extends EntityManager {
         this.stateMachine = new ActorStateMachine();
         this.idleState = new ActorIdleState(this, this.stateMachine);
         this.moveState = new ActorMoveState(this, this.stateMachine);
+        this.deadState = new ActorDeadState(this, this.stateMachine);
         this.stateMachine.Initialize(this.idleState);
     }
     //#endregion
@@ -169,6 +191,30 @@ export class ActorManager extends EntityManager {
             }
         }
     }
+    //#endregion
+
+    //#region 事件相关
+
+    private handleActorDamage(id: number, damage: number): void {
+        if (id !== this.id || this.invincibleTimer > 0 || this.stats.currentHealth <= 0) {
+            return;
+        } 
+        
+        this.invincibleTimer = this.invincibleTime;
+        this.stats.currentHealth -= damage;
+        Debug.Log('角色管理器', `受到伤害${damage}，当前生命${this.stats.currentHealth}`)
+        if (this.stats.currentHealth <= 0) {
+            this.stateMachine.changeState(this.deadState);
+            return;
+        }
+
+        // this.sprite.getComponent(Sprite).color = new Color(0, 255, 255);
+        tween(this.sprite.getComponent(Sprite))
+            .to(this.invincibleTime / 2, {color: new Color(0, 255, 255) })
+            .to(this.invincibleTime / 2, {color: new Color(255, 255, 255) })
+            .start();
+    }
+
     //#endregion
 }
 

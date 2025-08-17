@@ -47,7 +47,7 @@ export default class DataManager extends Singleton {
         actors: [
             {
                 id: 1,
-                type: ActorEntityTypeEnum.Actor02,
+                type: ActorEntityTypeEnum.Actor01,
                 position: { x: 0, y: 0 },
                 direction: { x: 0, y: 0 },
                 weaponList: [
@@ -219,11 +219,18 @@ export default class DataManager extends Singleton {
             case InputTypeEnum.EnemyKnockback: {
                 const { id, direction: {x,y}, force } = input;
                 const enemy = this.state.enemies.find(e => e.id === id);
+                const em = this.enemyMap.get(enemy.id);
+                if (em && em.stats.helath <= 0) {
+                    EventManager.Instance.emit(EventEnum.EnemyChangeState, id, EntityStateEnum.Dead);
+                    this.state.enemies.splice(this.state.enemies.indexOf(enemy), 1);
+                    return;
+                }
 
                 enemy.position.x = clamp(enemy.position.x + x * force, -Map_WIDTH, Map_WIDTH);
                 enemy.position.y = clamp(enemy.position.y + y * force, -Map_HEIGHT, Map_HEIGHT);
 
                 EventManager.Instance.emit(EventEnum.EnemyChangeState, id, EntityStateEnum.Damage);
+                
                 break;
             }
 
@@ -242,9 +249,9 @@ export default class DataManager extends Singleton {
                 break;
             }
             case InputTypeEnum.WeaponShoot: {
-                const { bulletType, position, direction } = input;
+                const { bulletType, position, direction, damage } = input;
                 const bullet: IBullet = {
-                    id: this.state.nextBulletId++, position, direction, type: bulletType
+                    id: this.state.nextBulletId++, position, direction, damage, type: bulletType
                 }
                 this.state.bullets.push(bullet);
                 break;
@@ -274,7 +281,7 @@ export default class DataManager extends Singleton {
                         const enemyPoints = CollisionUtil.getAABBPoints(enemyCenter, enemySize.x, enemySize.y);
                         if (CollisionUtil.isPolygonCollide(bulletPoints, enemyPoints)) {
                             EventManager.Instance.emit(EventEnum.BulletDestory, bullet.id);
-                            EventManager.Instance.emit(EventEnum.EnemyDamage, enemy.id, bullet.direction);
+                            EventManager.Instance.emit(EventEnum.EnemyDamage, enemy.id, bullet.damage, bullet.direction);
                             bullets.splice(i, 1);
                             bulletDestroyed = true;
                             break;
@@ -294,5 +301,13 @@ export default class DataManager extends Singleton {
                 }
             }
         }
+    }
+
+    /**
+     * 角色死亡删除舞台上的角色数据
+     * @param actorId 角色ID
+     */
+    public actorDead(actorId: number) {
+        this.state.actors.splice(this.state.actors.findIndex(a => a.id === actorId), 1);
     }
 }

@@ -1,9 +1,9 @@
 {
     "Enemy01": {
         "name": "鼠小弟",
-        "helath": 3,
+        "health": 30,
         "damage": 1,
-        "helathLevel": 2,
+        "healthLevel": 2,
         "damageLevel": 0.6,
         "minSpeed": 200,
         "maxSpeed": 300,

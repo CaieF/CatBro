@@ -8,6 +8,8 @@ import { EnemyDamageState, EnemyMoveState } from "./State";
 import { EnemyStateMachine } from "./EnemyStateMachine";
 import { EnemyStats } from "./EnemyStats";
 import { EnemyFactory } from "../../Factory/EnemyFactory";
+import { Debug } from "../../Util";
+import { EnemyDeadState } from "./State/EnemyDeadState";
 const { ccclass, property } = _decorator;
 
 const Tag = 'EnemyManager';
@@ -29,6 +31,7 @@ export class EnemyManager extends EntityManager {
     private stateMachine: EnemyStateMachine;  // 状态机
     public moveState: EnemyMoveState;  // 移动状态
     public damageState: EnemyDamageState;  // 受伤状态
+    public deathState: EnemyDeadState;
     //#endregion
 
     //#region Battle生命周期相关
@@ -83,35 +86,49 @@ export class EnemyManager extends EntityManager {
     }
 
     private initComponent(data: IEnemy): void {
+        this.node.setScale(1, 1);
+
         // 图片初始化
         this.sprite = this.node.getChildByName('Sprite');
         this.sprite.getComponent(Sprite).spriteFrame = DataManager.Instance.textureMap.get(data.type)[0];
+        this.sprite.setPosition(0, 0);
+        this.sprite.setRotationFromEuler(0, 0, 0);
         
         // 动画组件初始化
         this.am = this.sprite.getComponent(Animation);
         if (!this.am) {
             this.am = this.sprite.addComponent(Animation);
-            let clip = DataManager.Instance.animationMap.get(AnimationTypeEnum.ScaleAnimation);
+            let scaleClip = DataManager.Instance.animationMap.get(AnimationTypeEnum.ScaleAnimation);
+            let deathClip = DataManager.Instance.animationMap.get(AnimationTypeEnum.DeathAnimation);
             // this.am.addClip(clip);
-            this.am.defaultClip = clip;
-            this.am.play();
+            this.am.addClip(scaleClip);
+            this.am.addClip(deathClip);
+            
         }
+        this.am.play(AnimationTypeEnum.ScaleAnimation);
     }
 
     private initState(): void {
         this.stateMachine = new EnemyStateMachine();
         this.moveState = new EnemyMoveState(this, this.stateMachine);
         this.damageState = new EnemyDamageState(this, this.stateMachine);
+        this.deathState = new EnemyDeadState(this, this.stateMachine);
         this.stateMachine.Initialize(this.moveState);
     }
     //#endregion
+
+    //#region 事件相关
 
     /**
      * 处理敌人受伤事件
      * @param id 敌人ID
      */
-    private handleEnemyDamage(id: number, direction: IVec2): void{
+    private handleEnemyDamage(id: number, damage: number, direction: IVec2): void{
         if (id !== this.id) return;
+        
+        this.stats.helath -= damage;
+        // Debug.Log(Tag, `敌人${this.id}受到伤害${damage}`, '生命值为', this.stats.helath);
+
         
         DataManager.Instance.applyInput({
             id: this.id,
@@ -123,8 +140,9 @@ export class EnemyManager extends EntityManager {
     }
 
     private handleEnemyChangeState(id: number, state: EntityStateEnum): void {
+        // Debug.Log(Tag, '敌人生命', this.stats.helath, typeof this.stats.helath)
         if (id !== this.id) return;
-
+        // Debug.Log(Tag, `敌人${this.id}状态切换${state}`);
         switch (state) {
             case EntityStateEnum.Move:
                 this.stateMachine.changeState(this.moveState);  // 切换到移动状态
@@ -132,8 +150,13 @@ export class EnemyManager extends EntityManager {
             case EntityStateEnum.Damage:
                 this.stateMachine.changeState(this.damageState);  // 切换到受伤状态
                 break;
+            case EntityStateEnum.Dead:
+                this.stateMachine.changeState(this.deathState);  // 切换到死亡状态
+                break;
             default:
                 break;
         }
     }
+
+    //#endregion
 }

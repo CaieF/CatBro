@@ -74,6 +74,7 @@ export enum EntityTypeEnum {
  */
 export enum AnimationTypeEnum {
     ScaleAnimation = 'ScaleAnimation',
+    DeathAnimation = 'DeathAnimation',
 }
 
 /**

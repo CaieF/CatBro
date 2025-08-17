@@ -7,6 +7,7 @@ import { ActorStatModifier } from "./Modifier/ActorStatModifier";
  * 角色初始属性
  */
 const baseStats: Partial<ActorStats> = {
+    currentHealth: 10,
     maxHealth: 10,
     hpRegeneration: 0,
     lifeSteal: 0,
@@ -26,6 +27,7 @@ const baseStats: Partial<ActorStats> = {
 
 export class ActorStats {
     public currentLevel: number;    // 当前等级
+    public currentHealth: number;   // 当前生命
     public maxHealth: number;       // 最大生命值
     public hpRegeneration: number;  // 生命再生
     public lifeSteal: number;       // %生命窃取

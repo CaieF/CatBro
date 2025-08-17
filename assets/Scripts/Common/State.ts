@@ -38,6 +38,7 @@ export interface IBullet {
     id: number;
     position: IVec2;
     direction: IVec2;
+    damage: number;
     type: BulletTypeEnum;
 }
 
@@ -127,6 +128,7 @@ export interface IWeaponShootInput
     bulletType: BulletTypeEnum;
     position: IVec2;    // 武器位置
     direction: IVec2;   // 射击方向
+    damage: number;      // 伤害值
 }
 
 export interface ITimePastInput {
