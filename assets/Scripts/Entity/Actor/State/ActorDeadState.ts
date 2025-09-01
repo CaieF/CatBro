@@ -8,7 +8,7 @@ export class ActorDeadState extends ActorState {
     
     public enter(): void {
         DataManager.Instance.actorDead(this.manager.id);
-        DataManager.Instance.actorMap.delete(this.manager.id);
+        // DataManager.Instance.actorMap.delete(this.manager.id);
         this.manager.weapons.active = false;
 
         const scaleX = this.manager.facingRight ? 1 : -1;

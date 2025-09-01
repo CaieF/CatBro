@@ -14,6 +14,7 @@ import { WeaponFactory } from '../Factory/WeaponFactory';
 import { Debug } from '../Util';
 import { ActorFactory } from '../Factory/ActorFactory';
 import { EnemyFactory } from '../Factory/EnemyFactory';
+import { MaterialManager } from '../Entity/Material/MaterialManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -23,17 +24,20 @@ const { ccclass, property } = _decorator;
 @ccclass('BattleManager')
 export class BattleManager extends Component {
     private stage: Node;   // 舞台节点
-    private ui: Node;   // UI节点
+    private uiGame: Node;   // UIGame节点
 
     private shouldUpdate: boolean = false;   // 是否需要更新
 
+    private refreshTimer: number = 0;   // 敌人刷新计时器
+    private refreshInterval: number = 10;   // 敌人刷新间隔
+
     protected onLoad(): void {
         DataManager.Instance.stage = this.stage = this.node.getChildByName('Stage');
-        this.ui = find('UICanvas/UI');
+        this.uiGame = find('UIRoot/UIGame');
 
         this.stage.removeAllChildren();
 
-        DataManager.Instance.jm = this.ui.getComponentInChildren(JoyStickManager);
+        DataManager.Instance.jm = this.uiGame.getComponentInChildren(JoyStickManager);
     }
 
     protected async start(): Promise<void> {
@@ -67,6 +71,7 @@ export class BattleManager extends Component {
         }
 
         for (const type in AnimationPathEnum) {
+            Debug.Log(`load animation ${AnimationPathEnum[type]} start`);
             const p = ResourceManager.Instance.loadRes(AnimationPathEnum[type], AnimationClip).then((clip) => {
                 DataManager.Instance.animationMap.set(type, clip);
             });
@@ -114,9 +119,9 @@ export class BattleManager extends Component {
      * 渲染 将DataManager的数据渲染到舞台上
      */
     private render(): void {
+        this.renderMaterials();
         this.renderActors();
         this.renderEnemies();
-        
         this.renderBullets();
     }
 
@@ -129,12 +134,19 @@ export class BattleManager extends Component {
         this.tickEnemies(dt);
         RVOManager.Instance.tick(dt);
         this.tickEnemiesMove(dt);
+        this.tickMaterials(dt);
         // this.tickBullets(dt);
 
         DataManager.Instance.applyInput({
             type: InputTypeEnum.TimePast,
             dt
         })
+
+        this.refreshTimer += dt;
+        if (this.refreshTimer >= this.refreshInterval) {
+            this.refreshTimer = 0;
+            DataManager.Instance.refreshEnemies();
+        }
     }
 
     //#region 渲染相关
@@ -172,6 +184,24 @@ export class BattleManager extends Component {
                 em.init(data);
             } else {
                 em.render(data);
+            }
+        }
+    }
+
+    /**
+     * 渲染掉落材料
+     */
+    private renderMaterials(): void {
+        for (const data of DataManager.Instance.state.materials) {
+            const { id } = data;
+            let mm: MaterialManager = DataManager.Instance.materialMap.get(id);
+            if (!mm) {
+                const material: Node = ObjectPoolManager.Instance.get(EntityTypeEnum.Material);
+                mm = material.getComponent(MaterialManager) || material.addComponent(MaterialManager);
+                DataManager.Instance.materialMap.set(id, mm);
+                mm.init(data);
+            } else {
+                mm.render(data);
             }
         }
     }
@@ -225,6 +255,14 @@ export class BattleManager extends Component {
             const { id } = data;
             let em: EnemyManager = DataManager.Instance.enemyMap.get(id);
             em.tickMove(dt);
+        }
+    }
+
+    private tickMaterials(dt: number): void {
+        for (const data of DataManager.Instance.state.materials) {
+            const { id } = data;
+            let mm: MaterialManager = DataManager.Instance.materialMap.get(id);
+            mm.tick(dt);
         }
     }
 }

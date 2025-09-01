@@ -1,4 +1,4 @@
-import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, InitTypeEnum, InputTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "./Enum";
+import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, InitTypeEnum, InputTypeEnum, MaterialTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "./Enum";
 
 export interface IVec2 {
     x: number;
@@ -42,6 +42,12 @@ export interface IBullet {
     type: BulletTypeEnum;
 }
 
+export interface IMaterial {
+    id: number;
+    position: IVec2;
+    type: MaterialTypeEnum;
+}
+
 /**
  * 游戏状态接口
  */
@@ -49,7 +55,10 @@ export interface IState {
     actors: IActor[];
     enemies: IEnemy[];
     bullets: IBullet[];
+    materials: IMaterial[];
+    nextEnemyId: number;
     nextBulletId: number;
+    nextMaterialId: number;
 }
 
 /**
@@ -70,8 +79,8 @@ export interface IWeaponInit {
 /**
  * 输入接口
  */
-export type IClientInput = IActorMoveInput | IEnemyMoveInput | IEnemyKnockbackInput | IWeaponAimInput | IWeaponMoveInput | IWeaponShootInput
- | ITimePastInput;
+export type IClientInput = IActorMoveInput | IEnemyMoveInput | IEnemyKnockbackInput | IWeaponAimInput | IWeaponMoveInput | IWeaponShootInput 
+| IMaterialDropInput | IMaterialMoveInput | ITimePastInput;
 
 /**
  * 角色移动输入接口
@@ -129,6 +138,22 @@ export interface IWeaponShootInput
     position: IVec2;    // 武器位置
     direction: IVec2;   // 射击方向
     damage: number;      // 伤害值
+}
+
+/**
+ * 材料掉落输入接口
+ */
+export interface IMaterialDropInput {
+    type: InputTypeEnum.MaterialDrop;
+    materialType: MaterialTypeEnum;
+    position: IVec2;
+}
+
+export interface IMaterialMoveInput {
+    id: number;
+    type: InputTypeEnum.MaterialMove;
+    direction: IVec2;
+    dt: number;
 }
 
 export interface ITimePastInput {

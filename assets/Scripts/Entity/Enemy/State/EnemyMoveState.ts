@@ -72,9 +72,12 @@ export class EnemyMoveState extends EnemyState {
             return;
         }
         const distance = Math.sqrt(Math.pow(this.target.position.x - this.manager.node.position.x, 2) + Math.pow(this.target.position.y - this.manager.node.position.y, 2));
+        if (distance < 100) {
+            EventManager.Instance.emit(EventEnum.ActorDamage, this.target.id, this.manager.stats.damage);
+        }
+
         if (distance < this.stopDistance) {
             RVOManager.Instance.setPreferVelocity(this.manager.id, new Vec2(0, 0));
-            EventManager.Instance.emit(EventEnum.ActorDamage, this.target.id, this.manager.stats.damage);
             return;
         }
 

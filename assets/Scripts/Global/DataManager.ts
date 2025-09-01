@@ -2,13 +2,14 @@ import { Prefab, SpriteFrame, Node, AnimationClip, Vec2, UITransform, JsonAsset 
 import Singleton from "../Base/Singleton";
 import { ActorManager } from "../Entity/Actor/ActorManager";
 import { JoyStickManager } from "../UI/JoyStickManager";
-import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, IBullet, IClientInit, IClientInput, InitTypeEnum, InputTypeEnum, IState, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "../Common";
+import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, IBullet, IClientInit, IClientInput, IEnemy, IMaterial, InitTypeEnum, InputTypeEnum, IState, ITimePastInput, MaterialTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "../Common";
 import { clamp, CollisionUtil, Debug } from "../Util";
 import { EnemyManager } from "../Entity/Enemy/EnemyManager";
 import { WeaponManager } from "../Entity/Weapon/WeaponManager";
 import EventManager from "./EventManager";
 import { EntityStateEnum, EventEnum } from "../Enum";
 import { BulletManager } from "../Entity/Bullet/BulletManager";
+import { MaterialManager } from "../Entity/Material/MaterialManager";
 
 const ACTOR_SPEED = 450;    // 角色移动速度
 export const ENEMY_SPEED = 300;    // 敌人移动速度
@@ -33,6 +34,7 @@ export default class DataManager extends Singleton {
     public actorMap: Map<number, ActorManager> = new Map();   // 角色管理器映射表
     public enemyMap: Map<number, EnemyManager> = new Map();   // 敌人管理器映射表
     public bulletMap: Map<number, BulletManager> = new Map();   // 子弹映射表
+    public materialMap: Map<number, MaterialManager> = new Map();   // 物资映射表
     // public weaponMap: Map<number, WeaponManager> = new Map();   // 武器管理器映射表
     public prefabMap: Map<string, Prefab> = new Map();   // 预制体映射表
     // public actorPrefabMap: Map<string, Prefab> = new Map();   // 角色预制体映射表
@@ -167,7 +169,10 @@ export default class DataManager extends Singleton {
             },
         ],
         bullets: [],
+        materials: [],
+        nextEnemyId: 13,
         nextBulletId: 1,
+        nextMaterialId: 1,
     }
 
     /**
@@ -222,7 +227,7 @@ export default class DataManager extends Singleton {
                 const em = this.enemyMap.get(enemy.id);
                 if (em && em.stats.helath <= 0) {
                     EventManager.Instance.emit(EventEnum.EnemyChangeState, id, EntityStateEnum.Dead);
-                    this.state.enemies.splice(this.state.enemies.indexOf(enemy), 1);
+                    this.enemyDead(id);
                     return;
                 }
 
@@ -256,6 +261,25 @@ export default class DataManager extends Singleton {
                 this.state.bullets.push(bullet);
                 break;
             }
+
+            case InputTypeEnum.MaterialDrop: {
+                const { materialType, position } = input;
+                const material: IMaterial = {
+                    id: this.state.nextMaterialId++, type: materialType,
+                    position,
+                }
+                this.state.materials.push(material);
+                break;
+            }
+
+            case InputTypeEnum.MaterialMove: {
+                const { id, direction: {x,y}, dt } = input;
+                const material = this.state.materials.find(m => m.id === id);
+                material.position.x = clamp(material.position.x + x * ACTOR_SPEED * 2 * dt, -Map_WIDTH, Map_WIDTH);
+                material.position.y = clamp(material.position.y + y * ACTOR_SPEED * 2 * dt, -Map_HEIGHT, Map_HEIGHT);
+                break;
+            }
+
             case InputTypeEnum.TimePast: {
                 const { dt } = input;
                 const { bullets, enemies } = this.state;
@@ -303,11 +327,43 @@ export default class DataManager extends Singleton {
         }
     }
 
+
     /**
      * 角色死亡删除舞台上的角色数据
      * @param actorId 角色ID
      */
     public actorDead(actorId: number) {
         this.state.actors.splice(this.state.actors.findIndex(a => a.id === actorId), 1);
+        this.actorMap.delete(actorId);
+    }
+
+    private enemyDead(enemyId: number) {
+        this.state.enemies.splice(this.state.enemies.findIndex(e => e.id === enemyId), 1);
+        this.enemyMap.delete(enemyId);
+    }
+
+    public materialCollected(materialId: number) {
+        this.state.materials.splice(this.state.materials.findIndex(m => m.id === materialId), 1);
+        this.materialMap.delete(materialId);
+    }
+
+    /**
+     * 删新敌人
+     */
+    public refreshEnemies() {
+        if (this.state.actors.length < 1) return;
+
+        if (this.state.enemies.length >= 100) return;
+
+        for (let i = 0; i < 10; i++) {
+            const enemy: IEnemy = {
+                id: this.state.nextEnemyId++,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: (Math.random() - 0.5) * 2 * Map_WIDTH, y: (Math.random() - 0.5) * 2 * Map_HEIGHT },
+                direction: { x: 0, y: 0 }
+            }
+            this.state.enemies.push(enemy);
+        }
+
     }
 }

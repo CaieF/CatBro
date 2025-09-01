@@ -39,6 +39,7 @@ export enum PrefabPathEnum {
     Weapon01 = "prefab/weapon/Weapon01",
     Weapon02 = "prefab/weapon/Weapon02",
     Bullet = "prefab/Bullet",
+    Material = "prefab/Material",
 }
 
 /**
@@ -51,6 +52,9 @@ export enum TexturePathEnum {
     // Weapon01 = "texture/weapon/weapon01",
     // Weapon02 = "texture/weapon/weapon02",
     Bullet01 = "texture/bullet/bullet01",
+    Material01 = "texture/material/material01",
+    Material02 = "texture/material/material02",
+    Material03 = "texture/material/material03",
 }
 
 /**

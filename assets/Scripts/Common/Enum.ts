@@ -15,6 +15,8 @@ export enum InputTypeEnum {
     WeaponAim = 'WeaponAim',
     WeaponMove = 'WeaponMove',
     WeaponShoot = 'WeaponShoot',
+    MaterialDrop = 'MaterialDrop',
+    MaterialMove = 'MaterialMove',
     TimePast = 'TimePast'
 }
 
@@ -48,6 +50,12 @@ export enum BulletTypeEnum {
     Bullet01 = 'Bullet01',
 }
 
+export enum MaterialTypeEnum {
+    Material01 = 'Material01',
+    Material02 = 'Material02',
+    Material03 = 'Material03',
+}
+
 /**
  * 武器攻击类型枚举
  */
@@ -66,6 +74,7 @@ export enum EntityTypeEnum {
     Weapon01 = 'Weapon01',
     Weapon02 = 'Weapon02',
     Bullet = 'Bullet',
+    Material = 'Material',
     Map = 'Map',
 }
 
