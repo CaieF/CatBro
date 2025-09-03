@@ -4,10 +4,14 @@
  */
 export enum EventEnum {
     ActorDamage = "ActorDamage",    // 角色受伤事件
+    ActorCollect = "ActorCollect",  // 角色收集物品事件
     EnemyDamage = "EnemyDamage",    // 敌人受伤事件
     EnemyChangeState = "EnemyChangeState",  // 敌人状态改变事件
     BulletBorn = "BulletBorn",    // 子弹生成事件
     BulletDestory = "BulletDestory",    // 子弹销毁事件
+    UIHPUpdate = "UIHPUpdate",    // UI更新血条事件
+    UIEXPUpdate = "UIEXPUpdate",    // UI更新经验条事件
+    UIMoneyUpdate = "UIMoneyUpdate",    // UI更新金钱事件
 }
 
 /**
@@ -72,4 +76,19 @@ export enum ConfigPathEnum {
     WeaponConfig = "config/WeaponConfig",
     ActorConfig = "config/ActorConfig",
     EnemyConfig = "config/EnemyConfig",
+    LevelConfig = "config/LevelConfig", 
+}
+
+/**
+ * UI类型枚举
+ */
+export enum UITypeEnum {
+    UILevelUp = "UILevelUp",
+}
+
+/**
+ * UI路径枚举
+ */
+export enum UIPathEnum {
+    UILevelUp = "prefab/ui/UILevelUp",
 }

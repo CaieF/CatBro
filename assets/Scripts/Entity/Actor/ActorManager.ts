@@ -1,4 +1,4 @@
-import { _decorator, Animation, Color, instantiate, Node, Sprite, tween, Tween } from 'cc';
+import { _decorator, Animation, Color, instantiate, math, Node, Sprite, tween, Tween } from 'cc';
 import { AnimationTypeEnum, EntityTypeEnum, IActor, InitTypeEnum, IWeapon } from '../../Common';
 import DataManager from '../../Global/DataManager';
 import { EntityManager } from '../../Base/EntityManager';
@@ -8,9 +8,10 @@ import { ActorIdleState, ActorMoveState } from './State';
 import { ActorStats } from './ActorStats';
 import { ActorFactory } from '../../Factory/ActorFactory';
 import EventManager from '../../Global/EventManager';
-import { EventEnum } from '../../Enum';
+import { EventEnum, UITypeEnum } from '../../Enum';
 import { ActorDeadState } from './State/ActorDeadState';
 import { Debug } from '../../Util';
+import { UIManager } from '../../Global/UIManager';
 const { ccclass, property } = _decorator;
 
 /**
@@ -38,6 +39,10 @@ export class ActorManager extends EntityManager {
     //#endregion
 
     public stats: ActorStats;  // 角色属性
+    private exp: number;
+    private maxExp: number;
+    private money: number;
+
     private invincibleTime: number = 0.3;  // 受击无敌时间
     private invincibleTimer: number = 0;  // 受击无敌计时器
 
@@ -54,6 +59,7 @@ export class ActorManager extends EntityManager {
         this.initWeapons(data.weaponList);
 
         EventManager.Instance.on(EventEnum.ActorDamage, this.handleActorDamage, this);
+        EventManager.Instance.on(EventEnum.ActorCollect, this.handleActorCollect, this);
     }
 
     /**
@@ -80,6 +86,7 @@ export class ActorManager extends EntityManager {
 
     protected onDestroy(): void {
         EventManager.Instance.off(EventEnum.ActorDamage, this.handleActorDamage, this);
+        EventManager.Instance.off(EventEnum.ActorCollect, this.handleActorCollect, this);
     }
     //#endregion
 
@@ -96,6 +103,10 @@ export class ActorManager extends EntityManager {
         }
         this.node.setPosition(data.position.x, data.position.y);
         this.stats = ActorFactory.Instance.createActorStas(data.type);
+        this.exp = 0;
+        this.maxExp = this.stats.currentLevel * 10 + 10;
+        this.money = 30;
+        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
     }
 
     /**
@@ -199,20 +210,45 @@ export class ActorManager extends EntityManager {
         if (id !== this.id || this.invincibleTimer > 0 || this.stats.currentHealth <= 0) {
             return;
         } 
+
+        if (this.stats.dodge > math.randomRangeInt(0, 101)) {
+            Debug.Log('角色','闪避成功');
+            return;
+        }
         
         this.invincibleTimer = this.invincibleTime;
-        this.stats.currentHealth -= damage;
-        Debug.Log('角色管理器', `受到伤害${damage}，当前生命${this.stats.currentHealth}`)
-        if (this.stats.currentHealth <= 0) {
+        const finalDamage = this.stats.getFinalDamage(damage);
+
+        this.stats.currentHealth -= finalDamage;
+        if (this.stats.currentHealth < 0) {
+            this.stats.currentHealth = 0;
+        }
+
+        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
+        if (this.stats.currentHealth === 0) {
             this.stateMachine.changeState(this.deadState);
             return;
         }
 
-        // this.sprite.getComponent(Sprite).color = new Color(0, 255, 255);
         tween(this.sprite.getComponent(Sprite))
             .to(this.invincibleTime / 2, {color: new Color(0, 255, 255) })
             .to(this.invincibleTime / 2, {color: new Color(255, 255, 255) })
             .start();
+    }
+
+    private handleActorCollect(id: number): void {
+        if (id !== this.id) return;
+        this.money += 1;
+        this.exp += 1;
+        if (this.exp >= this.maxExp) {
+            this.exp -= this.maxExp;
+            this.stats.levelUp();
+            EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
+            this.maxExp = this.stats.currentLevel * 10 + 10;
+            UIManager.Instance.openPanel(UITypeEnum.UILevelUp, true, this.stats);
+        }
+        EventManager.Instance.emit(EventEnum.UIEXPUpdate, this.exp, this.maxExp, this.stats.currentLevel);
+        EventManager.Instance.emit(EventEnum.UIMoneyUpdate, this.money);
     }
 
     //#endregion

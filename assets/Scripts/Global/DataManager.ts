@@ -1,17 +1,15 @@
-import { Prefab, SpriteFrame, Node, AnimationClip, Vec2, UITransform, JsonAsset } from "cc";
+import { Prefab, SpriteFrame, Node, AnimationClip, Vec2, UITransform, JsonAsset, director } from "cc";
 import Singleton from "../Base/Singleton";
 import { ActorManager } from "../Entity/Actor/ActorManager";
 import { JoyStickManager } from "../UI/JoyStickManager";
 import { ActorEntityTypeEnum, BulletTypeEnum, EnemyEntityTypeEnum, IBullet, IClientInit, IClientInput, IEnemy, IMaterial, InitTypeEnum, InputTypeEnum, IState, ITimePastInput, MaterialTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "../Common";
 import { clamp, CollisionUtil, Debug } from "../Util";
 import { EnemyManager } from "../Entity/Enemy/EnemyManager";
-import { WeaponManager } from "../Entity/Weapon/WeaponManager";
 import EventManager from "./EventManager";
 import { EntityStateEnum, EventEnum } from "../Enum";
 import { BulletManager } from "../Entity/Bullet/BulletManager";
 import { MaterialManager } from "../Entity/Material/MaterialManager";
 
-const ACTOR_SPEED = 450;    // 角色移动速度
 export const ENEMY_SPEED = 300;    // 敌人移动速度
 const BULLET_SPEED = 1800;
 const Map_WIDTH = 1665;
@@ -28,6 +26,8 @@ export default class DataManager extends Singleton {
 
     public myPlayerId: number = 1;   // 玩家ID
     public myPlayer: Node;   // 玩家节点
+
+    public currentLevel: number = 1;   // 当前波数
 
     public stage: Node;   // 舞台节点
     public jm: JoyStickManager;   // 摇杆管理器
@@ -198,14 +198,18 @@ export default class DataManager extends Singleton {
      * @param input 客户端输入
      */
     public applyInput(input: IClientInput) {
+        if (director.isPaused()) return;
+
+
         switch(input.type) {
             case InputTypeEnum.ActorMove: {
                 const { id, direction: {x,y}, dt } = input;
                 // 查找对应的角色并更新状态
                 const actor = this.state.actors.find(a => a.id === id);
+                const am = this.actorMap.get(actor.id);
                 actor.direction = { x, y };
-                actor.position.x = clamp(actor.position.x + x * ACTOR_SPEED * dt, -Map_WIDTH, Map_WIDTH);
-                actor.position.y = clamp(actor.position.y + y * ACTOR_SPEED * dt, -Map_HEIGHT, Map_HEIGHT);
+                actor.position.x = clamp(actor.position.x + x * am.stats.finalSpeed * dt, -Map_WIDTH, Map_WIDTH);
+                actor.position.y = clamp(actor.position.y + y * am.stats.finalSpeed * dt, -Map_HEIGHT, Map_HEIGHT);
                 break;
             }
                 
@@ -275,8 +279,8 @@ export default class DataManager extends Singleton {
             case InputTypeEnum.MaterialMove: {
                 const { id, direction: {x,y}, dt } = input;
                 const material = this.state.materials.find(m => m.id === id);
-                material.position.x = clamp(material.position.x + x * ACTOR_SPEED * 2 * dt, -Map_WIDTH, Map_WIDTH);
-                material.position.y = clamp(material.position.y + y * ACTOR_SPEED * 2 * dt, -Map_HEIGHT, Map_HEIGHT);
+                material.position.x = clamp(material.position.x + x * 900 * dt, -Map_WIDTH, Map_WIDTH);
+                material.position.y = clamp(material.position.y + y * 900 * dt, -Map_HEIGHT, Map_HEIGHT);
                 break;
             }
 
@@ -355,7 +359,7 @@ export default class DataManager extends Singleton {
 
         if (this.state.enemies.length >= 100) return;
 
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 20; i++) {
             const enemy: IEnemy = {
                 id: this.state.nextEnemyId++,
                 type: EnemyEntityTypeEnum.Enemy01,
@@ -364,6 +368,8 @@ export default class DataManager extends Singleton {
             }
             this.state.enemies.push(enemy);
         }
+
+        this.currentLevel += 1;
 
     }
 }

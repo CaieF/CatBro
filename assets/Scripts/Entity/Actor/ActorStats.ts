@@ -1,5 +1,7 @@
+import { RoundTypeEnum } from "../../Common";
 import { ModifierTypeEnum } from "../../Enum";
 import { IModifier } from "../../Factory/ActorFactory";
+import { roundNum } from "../../Util";
 import { ActorMultiModifier } from "./Modifier";
 import { ActorStatModifier } from "./Modifier/ActorStatModifier";
 
@@ -7,7 +9,7 @@ import { ActorStatModifier } from "./Modifier/ActorStatModifier";
  * 角色初始属性
  */
 const baseStats: Partial<ActorStats> = {
-    currentHealth: 10,
+    // currentHealth: 10,
     maxHealth: 10,
     hpRegeneration: 0,
     lifeSteal: 0,
@@ -48,7 +50,7 @@ export class ActorStats {
     private multiModifiers: ActorMultiModifier[] = []; // 百分比修改
 
     public constructor(modifiers: IModifier[]) {
-        this.currentLevel = 1;
+        this.currentLevel = 0;
 
         for (const modifier of modifiers) {
             switch (modifier.type) {
@@ -63,7 +65,17 @@ export class ActorStats {
         this.updateStats();
     }
 
+    public levelUp(): void {
+        this.currentLevel += 1;
+        this.statModifiers.push(new ActorStatModifier('maxHealth', 1));
+        this.updateStats();
+    }
 
+    public addStrengthenModifier(statModifier: ActorStatModifier): void {
+        // this.statModifiers.push(new ActorStatModifier(statModifier.stat, statModifier.value));
+        this.statModifiers.push(statModifier);
+        this.updateStats();
+    }
 
     /**
      * 更新属性
@@ -78,5 +90,22 @@ export class ActorStats {
         for (const modifier of this.multiModifiers) {
             modifier.apply(this);
         }
+        this.currentHealth = this.maxHealth;
+    }
+
+    public get finalSpeed(): number {
+        const speed = 450 * (100 + this.speed) / 100;
+        
+        return roundNum(speed, RoundTypeEnum.Ceil);
+    }
+
+    /**
+     * newdamage = damage - damage * armor / (armor + 15)
+     * @param damage 敌人原始伤害
+     */
+    public getFinalDamage(damage: number): number {
+        let newdamage: number = roundNum(damage - damage * this.armor / (this.armor + 15), RoundTypeEnum.Floor);
+        newdamage = newdamage < 1 ? 1 : newdamage;
+        return newdamage;
     }
 }

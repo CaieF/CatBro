@@ -1,10 +1,11 @@
-import { Vec2 } from "cc";
-import { AnimationTypeEnum, IActor, IEnemy, InputTypeEnum } from "../../../Common";
+import { math, Vec2 } from "cc";
+import { AnimationTypeEnum, IActor, IEnemy, InputTypeEnum, RoundTypeEnum } from "../../../Common";
 import DataManager, { ENEMY_SPEED } from "../../../Global/DataManager";
 import { EnemyState } from "../EnemyState";
 import { RVOManager } from "../../../Global/RVOManager";
 import EventManager from "../../../Global/EventManager";
 import { EventEnum } from "../../../Enum";
+import { roundNum } from "../../../Util";
 
 export class EnemyMoveState extends EnemyState {
     private target: IActor;
@@ -73,6 +74,7 @@ export class EnemyMoveState extends EnemyState {
         }
         const distance = Math.sqrt(Math.pow(this.target.position.x - this.manager.node.position.x, 2) + Math.pow(this.target.position.y - this.manager.node.position.y, 2));
         if (distance < 100) {
+
             EventManager.Instance.emit(EventEnum.ActorDamage, this.target.id, this.manager.stats.damage);
         }
 

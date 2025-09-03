@@ -15,6 +15,8 @@ import { Debug } from '../Util';
 import { ActorFactory } from '../Factory/ActorFactory';
 import { EnemyFactory } from '../Factory/EnemyFactory';
 import { MaterialManager } from '../Entity/Material/MaterialManager';
+import { UIManager } from '../Global/UIManager';
+import { StrengthenFactory } from '../Factory/StrengthenFactory';
 const { ccclass, property } = _decorator;
 
 /**
@@ -42,6 +44,7 @@ export class BattleManager extends Component {
 
     protected async start(): Promise<void> {
         await this.loadRes();
+        await UIManager.Instance.init();
         this.initMap();
         this.initFactory();
         this.shouldUpdate = true;
@@ -106,6 +109,7 @@ export class BattleManager extends Component {
         WeaponFactory.Instance.init();
         ActorFactory.Instance.init();
         EnemyFactory.Instance.init();
+        StrengthenFactory.Instance.init();
     }
     //#endregion
 

@@ -1,0 +1,137 @@
+{
+    "maxHealth": {
+        "name": "心脏",
+        "modifiers": [
+            { "level": "1", "value": 2},
+            { "level": "2", "value": 4},
+            { "level": "3", "value": 6}
+        ],
+        "description": "+{value}最大生命值"
+    },
+    "hpRegeneration": {
+        "name": "肺",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}生命再生"
+    },
+    "lifeSteal": {
+        "name": "猫牙",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%生命窃取"
+    },
+    "damage": {
+        "name": "猫前腿",
+        "modifiers": [
+            { "level": "1", "value": 5},
+            { "level": "2", "value": 7},
+            { "level": "3", "value": 10}
+        ],
+        "description": "+{value}%伤害"
+    },
+    "meleeDamage": {
+        "name": "猫手",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}近战伤害"
+    },
+    "rangedDamage": {
+        "name": "猫鼻",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}远程伤害"
+    },
+    "elementDamage": {
+        "name": "猫脑",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}元素伤害"
+    },
+    "attackSpeed": {
+        "name": "猫哈气",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%攻击速度"
+    },
+    "critChance": {
+        "name": "猫爪",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%暴击率"
+    },
+    "range": {
+        "name": "猫眼",
+        "modifiers": [
+            { "level": "1", "value": 10},
+            { "level": "2", "value": 20},
+            { "level": "3", "value": 30}
+        ],
+        "description": "+{value}攻击范围"
+    },
+    "armor": {
+        "name": "猫皮毛",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}护甲"
+    },
+    "dodge": {
+        "name": "猫耳",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%闪避"
+    },
+    "speed": {
+        "name": "猫脚",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%速度"
+    },
+    "luck": {
+        "name": "猫胡须",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}%幸运"
+    },
+    "harvest": {
+        "name": "猫尾",
+        "modifiers": [
+            { "level": "1", "value": 1},
+            { "level": "2", "value": 2},
+            { "level": "3", "value": 3}
+        ],
+        "description": "+{value}收获"
+    }
+}

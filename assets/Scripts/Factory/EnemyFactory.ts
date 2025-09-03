@@ -31,7 +31,7 @@ export class EnemyFactory extends Singleton {
     public init(): void {
         const config = DataManager.Instance.configMap.get(ConfigTypeEnum.EnemyConfig).json;
         this.enemyConfig = config as Record<EnemyEntityTypeEnum, IEnemyConfig>;
-        Debug.Log(Tag, "敌人配置加载", this.enemyConfig);
+        // Debug.Log(Tag, "敌人配置加载", this.enemyConfig);
     }
 
     public createEnemyStats(type: EnemyEntityTypeEnum, level: number): EnemyStats {

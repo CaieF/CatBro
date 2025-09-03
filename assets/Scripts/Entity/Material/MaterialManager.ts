@@ -3,6 +3,8 @@ import { EntityManager } from '../../Base/EntityManager';
 import { IActor, IMaterial, InputTypeEnum, MaterialTypeEnum } from '../../Common';
 import DataManager from '../../Global/DataManager';
 import { ObjectPoolManager } from '../../Global/ObjectPoolManager';
+import EventManager from '../../Global/EventManager';
+import { EventEnum } from '../../Enum';
 const { ccclass, property } = _decorator;
 
 @ccclass('MaterialManager')
@@ -56,6 +58,7 @@ export class MaterialManager extends EntityManager {
         if (distance < 50) {
             ObjectPoolManager.Instance.ret(this.node);
             DataManager.Instance.materialCollected(this.id);
+            EventManager.Instance.emit(EventEnum.ActorCollect, this.target.id);
             this.recyle();
             return;
         }

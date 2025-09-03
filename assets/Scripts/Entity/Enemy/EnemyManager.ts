@@ -82,7 +82,7 @@ export class EnemyManager extends EntityManager {
         this.node.setPosition(data.position.x, data.position.y);
         this.flowDir = new Vec2(0, 0);
 
-        this.stats = EnemyFactory.Instance.createEnemyStats(data.type, 1);
+        this.stats = EnemyFactory.Instance.createEnemyStats(data.type, DataManager.Instance.currentLevel);
     }
 
     private initComponent(data: IEnemy): void {

@@ -93,6 +93,7 @@ export enum ConfigTypeEnum {
     WeaponConfig = 'WeaponConfig',
     ActorConfig = 'ActorConfig',
     EnemyConfig = 'EnemyConfig',
+    LevelConfig = 'LevelConfig',
 }
 
 /**

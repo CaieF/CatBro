@@ -46,7 +46,7 @@ export class WeaponStats {
      * @returns 最终伤害
      */
     public get finalDamage() {
-        const damage = (this.baseDamage + this.as.elementDamage * this.elementAddDamage + this.as.meleeDamage * this.meleeAddDamage + this.as.rangedDamage * this.rangedAddDamage) * (1 + this.as.damage)
+        const damage = (this.baseDamage + this.as.elementDamage * this.elementAddDamage + this.as.meleeDamage * this.meleeAddDamage + this.as.rangedDamage * this.rangedAddDamage) * (1 + (this.as.damage / 100));
         return roundNum(damage, RoundTypeEnum.Floor);
     }
 }
