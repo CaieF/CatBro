@@ -1,7 +1,7 @@
 import { _decorator, AnimationClip, Component, find, instantiate, JsonAsset, Node, Prefab, resources, SpriteFrame, UITransform } from 'cc';
 import DataManager from '../Global/DataManager';
 import { JoyStickManager } from '../UI/JoyStickManager';
-import { AnimationPathEnum, ConfigPathEnum, PrefabPathEnum, TexturePathEnum } from '../Enum';
+import { AnimationPathEnum, ConfigPathEnum, PrefabPathEnum, TexturePathEnum, UITypeEnum } from '../Enum';
 import { ResourceManager } from '../Global/ResourceManager';
 import { ActorManager } from '../Entity/Actor/ActorManager';
 import { EntityTypeEnum, InputTypeEnum } from '../Common';
@@ -48,6 +48,7 @@ export class BattleManager extends Component {
         this.initMap();
         this.initFactory();
         this.shouldUpdate = true;
+        UIManager.Instance.closePanel(UITypeEnum.UILoading, true);
     }
 
     //#region 初始化相关

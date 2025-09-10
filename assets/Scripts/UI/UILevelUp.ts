@@ -3,9 +3,12 @@ import { UIBase } from '../Base/UIBase';
 import { UIStats } from './UIStats';
 import { ActorStats } from '../Entity/Actor/ActorStats';
 import { UIManager } from '../Global/UIManager';
-import { UITypeEnum } from '../Enum';
+import { EventEnum, UITypeEnum } from '../Enum';
 import { IStrengthenResult, StrengthenFactory } from '../Factory/StrengthenFactory';
 import { UIStrengthen } from './UIStrengthen';
+import DataManager from '../Global/DataManager';
+import { ActorManager } from '../Entity/Actor/ActorManager';
+import EventManager from '../Global/EventManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('UILevelUp')
@@ -42,6 +45,13 @@ export class UILevelUp extends UIBase {
 
     private clickRefresh(): void {
         // UIManager.Instance.closePanel(UITypeEnum.UILevelUp)
+        const am = DataManager.Instance.myPlayer.getComponent(ActorManager);
+        if (am.money < 2) {
+            return;
+        }
+
+        am.money -= 2;
+        EventManager.Instance.emit(EventEnum.UIMoneyUpdate, am.money);
         this.refreshOptions();
     }
 

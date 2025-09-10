@@ -20,6 +20,7 @@ export class UIManager extends Singleton {
         this.uiPrefabMap = new Map();
         this.panels = new Map();
 
+        this.panels.set(UITypeEnum.UILoading, find("UIRoot/UILoading"));
         await this.loadPanel();
 
         Debug.Log(`UIManager init success`, this.panels, this.uiPrefabMap);
@@ -55,7 +56,7 @@ export class UIManager extends Singleton {
         if (this.panels.has(name)) {
             let panel = this.panels.get(name);
             panel.active = true;
-            panel.getComponent(UIBase).open(...args);
+            panel.getComponent(UIBase)?.open(...args);
             if (bringToTop) {
                 const index = this.uiRoot.children.length - 1;
                 panel.setSiblingIndex(index);
@@ -84,7 +85,7 @@ export class UIManager extends Singleton {
             return;
         }
 
-        panel.getComponent(UIBase).close(...args);
+        panel.getComponent(UIBase)?.close(...args);
         panel.active = false;
     }
 }

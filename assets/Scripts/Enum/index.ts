@@ -84,6 +84,7 @@ export enum ConfigPathEnum {
  */
 export enum UITypeEnum {
     UILevelUp = "UILevelUp",
+    UILoading = "UILoading",
 }
 
 /**

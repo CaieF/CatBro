@@ -41,7 +41,7 @@ export class ActorManager extends EntityManager {
     public stats: ActorStats;  // 角色属性
     private exp: number;
     private maxExp: number;
-    private money: number;
+    public money: number;
 
     private invincibleTime: number = 0.3;  // 受击无敌时间
     private invincibleTimer: number = 0;  // 受击无敌计时器
