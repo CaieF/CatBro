@@ -1,4 +1,4 @@
-import { Asset, resources } from "cc";
+import { Asset, Prefab, resources, SpriteFrame } from "cc";
 import Singleton from "../Base/Singleton";
 
 /**
@@ -6,6 +6,10 @@ import Singleton from "../Base/Singleton";
  * 负责管理游戏资源的加载
  */
 export class ResourceManager extends Singleton {
+    private prefabMap: Map<string, Prefab> = new Map();
+
+    private textureMap: Map<string, SpriteFrame> = new Map();
+
     public static get Instance() {
         return super.GetInstance<ResourceManager>();
     }
@@ -45,4 +49,5 @@ export class ResourceManager extends Singleton {
             });
         });
     }
+
 }

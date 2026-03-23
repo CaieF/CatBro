@@ -1,8 +1,8 @@
 import Singleton from "../Base/Singleton";
 import { ActorEntityTypeEnum, ConfigTypeEnum } from "../Common";
-import { ActorStats } from "../Entity/Actor/ActorStats";
+import { ActorStats, IActorStats } from "../Entity/Actor/ActorStats";
 import { IActorModifier } from "../Entity/Actor/IActorModifier";
-import { ModifierTypeEnum } from "../Enum";
+import { ActorStatsEnum, ModifierTypeEnum } from "../Enum";
 import DataManager from "../Global/DataManager";
 import { Debug } from "../Util";
 
@@ -13,8 +13,9 @@ interface IChanges {
 export interface IModifier {
     type: ModifierTypeEnum;
     // changes: IChanges;
-    stat: keyof ActorStats;
+    stat: ActorStatsEnum;
     value: number;
+    description: string;
 }
 
 export interface IActorConfig {
@@ -38,6 +39,10 @@ export class ActorFactory extends Singleton {
         // Debug.Log(Tag, config)
         this.ActorConfig = config as Record<ActorEntityTypeEnum, IActorConfig>;
         Debug.Log(Tag, "角色配置加载", this.ActorConfig);
+    }
+
+    public getActorConfig(actorType: ActorEntityTypeEnum): IActorConfig {
+        return this.ActorConfig[actorType];
     }
 
     /**

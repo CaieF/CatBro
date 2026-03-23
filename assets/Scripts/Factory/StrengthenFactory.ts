@@ -31,7 +31,7 @@ export class StrengthenFactory extends Singleton {
     }
 
     public init(): void {
-        const config = DataManager.Instance.configMap.get(ConfigTypeEnum.LevelConfig).json;
+        const config = DataManager.Instance.configMap.get(ConfigTypeEnum.StrengthenConfig).json;
         this.StrengthenConfig = config as Record<string, IStrengthenConfig>;
         Debug.Log(Tag, "等级配置加载", this.StrengthenConfig);
     }
@@ -39,7 +39,7 @@ export class StrengthenFactory extends Singleton {
     /**
      * 创建四个随机属性的随机等级强化
      */
-    public createLevel(): IStrengthenResult[] {
+    public createStrengthen(): IStrengthenResult[] {
         const results: IStrengthenResult[] = [];
 
         const availableStats = Object.keys(this.StrengthenConfig);

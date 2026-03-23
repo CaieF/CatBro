@@ -8,7 +8,7 @@ import { ActorIdleState, ActorMoveState } from './State';
 import { ActorStats } from './ActorStats';
 import { ActorFactory } from '../../Factory/ActorFactory';
 import EventManager from '../../Global/EventManager';
-import { EventEnum, UITypeEnum } from '../../Enum';
+import { ActorStatsEnum, EventEnum, UITypeEnum } from '../../Enum';
 import { ActorDeadState } from './State/ActorDeadState';
 import { Debug } from '../../Util';
 import { UIManager } from '../../Global/UIManager';
@@ -62,11 +62,14 @@ export class ActorManager extends EntityManager {
         EventManager.Instance.on(EventEnum.ActorCollect, this.handleActorCollect, this);
     }
 
+    
+
     /**
      * 角色渲染
      * @param data 角色数据 
      */
     public render(data: IActor): void {
+        if (!this.stateMachine || !this.stateMachine.currentState) return;
         this.stateMachine.currentState?.render(data);
         this.renderWeapons();
     }
@@ -80,6 +83,7 @@ export class ActorManager extends EntityManager {
         // if (this.invincibleTimer <= 0) {
         //     this.sprite.getComponent(Sprite).color = new Color(255, 255, 255);
         // }
+        if (!this.stateMachine || !this.stateMachine.currentState) return;
         this.stateMachine.currentState?.tick(dt);
         this.tickWeapons(dt);
     }
@@ -106,7 +110,9 @@ export class ActorManager extends EntityManager {
         this.exp = 0;
         this.maxExp = this.stats.currentLevel * 10 + 10;
         this.money = 30;
-        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
+        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.get(ActorStatsEnum.MaxHealth));
+        EventManager.Instance.emit(EventEnum.UIEXPUpdate, this.exp, this.maxExp, this.stats.currentLevel);
+        EventManager.Instance.emit(EventEnum.UIMoneyUpdate, this.money);
     }
 
     /**
@@ -211,7 +217,7 @@ export class ActorManager extends EntityManager {
             return;
         } 
 
-        if (this.stats.dodge > math.randomRangeInt(0, 101)) {
+        if (this.stats.get(ActorStatsEnum.Dodge) > math.randomRangeInt(0, 101)) {
             Debug.Log('角色','闪避成功');
             return;
         }
@@ -224,7 +230,7 @@ export class ActorManager extends EntityManager {
             this.stats.currentHealth = 0;
         }
 
-        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
+        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.get(ActorStatsEnum.MaxHealth));
         if (this.stats.currentHealth === 0) {
             this.stateMachine.changeState(this.deadState);
             return;
@@ -243,7 +249,7 @@ export class ActorManager extends EntityManager {
         if (this.exp >= this.maxExp) {
             this.exp -= this.maxExp;
             this.stats.levelUp();
-            EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.maxHealth);
+            EventManager.Instance.emit(EventEnum.UIHPUpdate, this.stats.currentHealth, this.stats.get(ActorStatsEnum.MaxHealth));
             this.maxExp = this.stats.currentLevel * 10 + 10;
             UIManager.Instance.openPanel(UITypeEnum.UILevelUp, true, this.stats);
         }

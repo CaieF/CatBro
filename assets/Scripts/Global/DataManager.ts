@@ -26,6 +26,7 @@ export default class DataManager extends Singleton {
 
     public myPlayerId: number = 1;   // 玩家ID
     public myPlayer: Node;   // 玩家节点
+    public myPlayerType: ActorEntityTypeEnum = ActorEntityTypeEnum.Actor01;   // 玩家类型
 
     public currentLevel: number = 1;   // 当前波数
 
@@ -173,6 +174,148 @@ export default class DataManager extends Singleton {
         nextEnemyId: 13,
         nextBulletId: 1,
         nextMaterialId: 1,
+    }
+
+    initState: IState = {
+        actors: [
+            {
+                id: 1,
+                type: ActorEntityTypeEnum.Actor01,
+                position: { x: 0, y: 0 },
+                direction: { x: 0, y: 0 },
+                weaponList: [
+                    {
+                        id: 1,
+                        type: WeaponEntityTypeEnum.Weapon01,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                    },
+                    {
+                        id: 2,
+                        type: WeaponEntityTypeEnum.Weapon01,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                    },
+                    {
+                        id: 3,
+                        type: WeaponEntityTypeEnum.Weapon02,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                        bulletType: BulletTypeEnum.Bullet01,
+                    },
+                    {
+                        id: 4,
+                        type: WeaponEntityTypeEnum.Weapon02,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                        bulletType: BulletTypeEnum.Bullet01,
+                    },
+                    {
+                        id: 5,
+                        type: WeaponEntityTypeEnum.Weapon02,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                        bulletType: BulletTypeEnum.Bullet01,
+                    },
+                    {
+                        id: 6,
+                        type: WeaponEntityTypeEnum.Weapon01,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                    },
+                ]
+            },
+        ],
+        enemies: [
+            {
+                id: 1,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 500, y: 500 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 2,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -500, y: -500 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 3,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 1000, y: 1000 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 4,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -1000, y: -1000 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 5,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 500, y: -500 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 6,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -500, y: 500 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 7,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 300, y: 300 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 8,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -300, y: -300 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 9,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 8000, y: 8000 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 10,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -800, y: -800 },
+                direction: { x: 0, y: 0 }
+            },{
+                id: 11,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: 400, y: -500 },
+                direction: { x: 0, y: 0 }
+            },
+            {
+                id: 12,
+                type: EnemyEntityTypeEnum.Enemy01,
+                position: { x: -400, y: 500 },
+                direction: { x: 0, y: 0 }
+            },
+        ],
+        bullets: [],
+        materials: [],
+        nextEnemyId: 13,
+        nextBulletId: 1,
+        nextMaterialId: 1,
+    }
+
+    public restart() {
+        
+        this.currentLevel = 1;
+        // 重置状态
+        this.myPlayer = null;
+        this.initState.actors.forEach(actor => {
+            if (actor.id === this.myPlayerId) actor.type = this.myPlayerType;
+        })
+        this.state = JSON.parse(JSON.stringify(this.initState));
+    
     }
 
     /**

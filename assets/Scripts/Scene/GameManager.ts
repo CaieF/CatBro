@@ -1,7 +1,7 @@
 import { _decorator, AnimationClip, Component, find, instantiate, JsonAsset, Node, Prefab, resources, SpriteFrame, UITransform } from 'cc';
 import DataManager from '../Global/DataManager';
 import { JoyStickManager } from '../UI/JoyStickManager';
-import { AnimationPathEnum, ConfigPathEnum, PrefabPathEnum, TexturePathEnum, UITypeEnum } from '../Enum';
+import { AnimationPathEnum, ConfigPathEnum, EventEnum, PrefabPathEnum, TextureDirEnum, TexturePathEnum, UITypeEnum } from '../Enum';
 import { ResourceManager } from '../Global/ResourceManager';
 import { ActorManager } from '../Entity/Actor/ActorManager';
 import { EntityTypeEnum, InputTypeEnum } from '../Common';
@@ -17,14 +17,15 @@ import { EnemyFactory } from '../Factory/EnemyFactory';
 import { MaterialManager } from '../Entity/Material/MaterialManager';
 import { UIManager } from '../Global/UIManager';
 import { StrengthenFactory } from '../Factory/StrengthenFactory';
+import EventManager from '../Global/EventManager';
 const { ccclass, property } = _decorator;
 
 /**
  * 战斗管理类
  * 负责战斗场景的渲染和更新
  */
-@ccclass('BattleManager')
-export class BattleManager extends Component {
+@ccclass('GameManager')
+export class GameManager extends Component {
     private stage: Node;   // 舞台节点
     private uiGame: Node;   // UIGame节点
 
@@ -47,8 +48,12 @@ export class BattleManager extends Component {
         await UIManager.Instance.init();
         this.initMap();
         this.initFactory();
-        this.shouldUpdate = true;
-        UIManager.Instance.closePanel(UITypeEnum.UILoading, true);
+        this.shouldUpdate = false;
+        UIManager.Instance.closePanel(UITypeEnum.UILoading);
+        UIManager.Instance.openPanel(UITypeEnum.UIHeroSelect, false);
+        // this.onRestart();
+        EventManager.Instance.on(EventEnum.GameStart, this.onGameStart, this);
+        EventManager.Instance.on(EventEnum.GameOver, this.onGameOver, this);
     }
 
     //#region 初始化相关
@@ -70,6 +75,16 @@ export class BattleManager extends Component {
         for (const type in TexturePathEnum) {
             const p = ResourceManager.Instance.loadDir(TexturePathEnum[type], SpriteFrame).then((frames) => {
                 DataManager.Instance.textureMap.set(type, frames);
+            });
+            list.push(p);
+        }
+
+        for (const type in TextureDirEnum) {
+            const p = ResourceManager.Instance.loadDir(TextureDirEnum[type], SpriteFrame).then((frames) => {
+                for (const frame of frames) {
+                    DataManager.Instance.textureMap.set(frame.name, [frame]);
+                    Debug.Log(`load texture ${frame.name} success`, DataManager.Instance.textureMap);
+                }
             });
             list.push(p);
         }
@@ -160,6 +175,7 @@ export class BattleManager extends Component {
      */
     private renderActors(): void {
         for (const data of DataManager.Instance.state.actors) {
+            console.log('render actor', DataManager.Instance.state);
             const { id } = data;
             let am: ActorManager = DataManager.Instance.actorMap.get(id);
             if (!am) {
@@ -239,6 +255,7 @@ export class BattleManager extends Component {
         for (const data of DataManager.Instance.state.actors) {
             const { id } = data;
             let am: ActorManager = DataManager.Instance.actorMap.get(id);
+            if (!am) continue;
             am.tick(dt);
         }
     }
@@ -269,6 +286,32 @@ export class BattleManager extends Component {
             let mm: MaterialManager = DataManager.Instance.materialMap.get(id);
             mm.tick(dt);
         }
+    }
+
+    private onGameStart() {
+        
+        DataManager.Instance.restart();
+        
+        // 重新初始化地图和工厂
+        this.initMap();
+        this.initFactory();
+        
+        // 6. 恢复更新
+        this.shouldUpdate = true;
+    }
+
+    private onGameOver() {
+        this.shouldUpdate = false;
+        ObjectPoolManager.Instance.clear();
+
+        // 2. 清理舞台上的所有节点
+        this.stage.removeAllChildren();
+
+        // 3. 清空所有管理器映射表
+        DataManager.Instance.actorMap.clear();
+        DataManager.Instance.enemyMap.clear();
+        DataManager.Instance.bulletMap.clear();
+        DataManager.Instance.materialMap.clear();
     }
 }
 

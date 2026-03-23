@@ -3,6 +3,18 @@ import { IEnemyConfig } from "../../Factory/EnemyFactory";
 import { Debug } from "../../Util";
 
 const Tag = 'EnemyStats';
+
+export interface IEnemyStats {
+    // 自动补全测试
+    name: string;
+    health: number;
+    damage: number;
+    speed: number;
+    dropMaterial: number;
+    dropConsimable: number;
+    dropChest: number;
+}
+
 /**
  * 敌人属性类
  */

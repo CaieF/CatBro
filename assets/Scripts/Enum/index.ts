@@ -12,6 +12,8 @@ export enum EventEnum {
     UIHPUpdate = "UIHPUpdate",    // UI更新血条事件
     UIEXPUpdate = "UIEXPUpdate",    // UI更新经验条事件
     UIMoneyUpdate = "UIMoneyUpdate",    // UI更新金钱事件
+    GameStart = "GameStart",    // 游戏开始事件
+    GameOver = "GameOver",    // 游戏结束事件
 }
 
 /**
@@ -23,6 +25,34 @@ export enum EntityStateEnum {
     Damage = "Damage",
     Attack = "Attack",
     Dead = "Dead",
+}
+
+export enum ActorStatsEnum {
+    MaxHealth = "maxHealth",
+    HpRegeneration = "hpRegeneration",
+    LifeSteal = "lifeSteal",
+    Damage = "damage",
+    MeleeDamage = "meleeDamage",
+    RangedDamage = "rangedDamage",
+    ElementDamage = "elementDamage",
+    AttackSpeed = "attackSpeed",
+    CritChance = "critChance",
+    Engine = "engine",
+    Range = "range",
+    Armor = "armor",
+    Dodge = "dodge",
+    Speed = "speed",
+    Luck = "luck",
+    Harvest = "harvest",
+}
+
+export enum EnemyStatsEnum {
+    Helath = "helath",
+    Damage = "damage",
+    Speed = "speed",
+    DropMaterial = "dropMaterial",
+    DropConsimable = "dropConsimable",
+    DropChest = "dropChest",
 }
 
 /**
@@ -61,6 +91,10 @@ export enum TexturePathEnum {
     Material03 = "texture/material/material03",
 }
 
+export enum TextureDirEnum {
+    UIStrengthenIcon = "texture/ui/strengthenicon"
+}
+
 /**
  * 动画路径
  */
@@ -76,7 +110,7 @@ export enum ConfigPathEnum {
     WeaponConfig = "config/WeaponConfig",
     ActorConfig = "config/ActorConfig",
     EnemyConfig = "config/EnemyConfig",
-    LevelConfig = "config/LevelConfig", 
+    StrengthenConfig = "config/StrengthenConfig", 
 }
 
 /**
@@ -85,6 +119,9 @@ export enum ConfigPathEnum {
 export enum UITypeEnum {
     UILevelUp = "UILevelUp",
     UILoading = "UILoading",
+    UIHeroSelect = "UIHeroSelect",
+    UIOver = "UIOver",
+    UIStart = "UIStart",
 }
 
 /**
@@ -92,4 +129,5 @@ export enum UITypeEnum {
  */
 export enum UIPathEnum {
     UILevelUp = "prefab/ui/UILevelUp",
+    UIOver = "prefab/ui/UIOver",
 }

@@ -11,13 +11,16 @@ const { ccclass, property } = _decorator;
 export class CameraManager extends Component {
 
     update(deltaTime: number) {
-        if (!DataManager.Instance.myPlayer) return;
-
-        const playerPos = DataManager.Instance.myPlayer.position.clone();
-        playerPos.x = clamp(playerPos.x, -530, 530);
-        playerPos.y = clamp(playerPos.y, -530, 530);
-        this.node.setPosition(playerPos.x, playerPos.y);
-    }
+    const myPlayer = DataManager.Instance.myPlayer;
+    if (!myPlayer || !myPlayer.position) return;
+    
+    const playerPos = myPlayer.position.clone();
+    if (!playerPos) return;
+    
+    playerPos.x = clamp(playerPos.x, -530, 530);
+    playerPos.y = clamp(playerPos.y, -530, 530);
+    this.node.setPosition(playerPos.x, playerPos.y);
+}
 }
 
 

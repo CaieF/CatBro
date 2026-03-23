@@ -27,7 +27,7 @@
         "description": "+{value}%生命窃取"
     },
     "damage": {
-        "name": "猫前腿",
+        "name": "猫前脚",
         "modifiers": [
             { "level": "1", "value": 5},
             { "level": "2", "value": 7},

@@ -55,4 +55,16 @@ export class ObjectPoolManager extends Singleton {
         node.active = false;
         this.map.get(node.name as EntityTypeEnum).push(node);
     }
+
+    /**
+     * 清空对象池
+     */
+    public clear(): void {
+        if (this.objectPool) {
+            // this.objectPool.destroyAllChildren();
+            this.objectPool.destroy();
+            this.objectPool = null;
+        }
+        this.map.clear();
+    }
 }

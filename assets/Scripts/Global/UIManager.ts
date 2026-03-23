@@ -21,6 +21,8 @@ export class UIManager extends Singleton {
         this.panels = new Map();
 
         this.panels.set(UITypeEnum.UILoading, find("UIRoot/UILoading"));
+        this.panels.set(UITypeEnum.UIHeroSelect, find("UIRoot/UIHeroSelect"));
+        this.panels.set(UITypeEnum.UIStart, find("UIRoot/UIStart"));
         await this.loadPanel();
 
         Debug.Log(`UIManager init success`, this.panels, this.uiPrefabMap);

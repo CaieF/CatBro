@@ -14,25 +14,18 @@ const { ccclass, property } = _decorator;
 @ccclass('UILevelUp')
 export class UILevelUp extends UIBase {
     
+    @property(Node)
     private uiStats: Node;
+
+    @property(Node)
     private layout: Node;
+
     private strengthenOptions: IStrengthenResult[];
 
-    // public init(actorStats: ActorStats): void {
-    //     this.uiStats = this.node.getChildByName('UIStats');
-    //     this.uiStats.getComponent(UIStats).init(actorStats);
-    // }
 
     public open(stats: ActorStats): void {
+        super.open()
         director.pause();
-        if (!this.uiStats) {
-            this.uiStats = this.node.getChildByName('UIStats');
-        }
-
-        if (!this.layout) {
-            this.layout = this.node.getChildByName('Layout');
-        }
-
         this.refreshOptions();
 
         this.uiStats.getComponent(UIStats).open(stats);
@@ -55,8 +48,9 @@ export class UILevelUp extends UIBase {
         this.refreshOptions();
     }
 
+    /** 刷新强化选项 */
     private refreshOptions(): void {
-        this.strengthenOptions = StrengthenFactory.Instance.createLevel();
+        this.strengthenOptions = StrengthenFactory.Instance.createStrengthen();
 
         for (let i = 0; i < this.strengthenOptions.length; i++) {
             let uiStrengthen = this.layout.children[i];

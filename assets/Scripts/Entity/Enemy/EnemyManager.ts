@@ -55,11 +55,17 @@ export class EnemyManager extends EntityManager {
         EventManager.Instance.off(EventEnum.EnemyChangeState, this.handleEnemyChangeState, this)
     }
 
+    protected onDestroy(): void {
+        EventManager.Instance.off(EventEnum.EnemyDamage, this.handleEnemyDamage, this)
+        EventManager.Instance.off(EventEnum.EnemyChangeState, this.handleEnemyChangeState, this)
+    }
+
     /**
      * 角色渲染
      * @param data 敌人数据 
      */
     public render(data: IEnemy): void {
+        if (!this.stateMachine || !this.stateMachine.currentState) return;
         this.stateMachine.currentState?.render(data);
     }
     
@@ -68,10 +74,12 @@ export class EnemyManager extends EntityManager {
      * @param dt 时间间隔
      */
     public tick(dt: number): void {
+        if (!this.stateMachine || !this.stateMachine.currentState) return;
         this.stateMachine.currentState?.tick(dt);  // 更新状态机
     }
 
     public tickMove(dt: number) {
+        if (!this.stateMachine || !this.stateMachine.currentState) return;
         this.stateMachine.currentState?.tickMove(dt);  // 更新移动状态
     }
     //#endregion

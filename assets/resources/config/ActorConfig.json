@@ -12,7 +12,7 @@
         "modifiers": [
             { "type": "StatModifier", "stat": "range", "value": 50, "description": "范围+50" },
             { "type": "MultiModifier", "stat": "rangedDamage", "value": 50, "description": "远程伤害修改增加50%" },
-            { "type": "MultiModifier", "stat": "maxHealth", "value": -25, "description": "最大生命值修改减少25" }
+            { "type": "MultiModifier", "stat": "maxHealth", "value": -25, "description": "最大生命值修改减少25%" }
         ]
     }
 }

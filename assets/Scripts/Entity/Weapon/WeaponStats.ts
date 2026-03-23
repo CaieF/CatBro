@@ -1,4 +1,5 @@
 import { RoundTypeEnum, WeaponAttackTypeEnum, WeaponEntityTypeEnum } from "../../Common";
+import { ActorStatsEnum } from "../../Enum";
 import { IWeaponConfig } from "../../Factory/WeaponFactory";
 import { Debug, roundNum } from "../../Util";
 import { ActorStats } from "../Actor/ActorStats";
@@ -37,7 +38,7 @@ export class WeaponStats {
      * @returns 最终攻击范围
      */
     public get finalRange(): number {
-        return (this.attackRange + this.as.range * (this.attackType === WeaponAttackTypeEnum.Ranged? 1 : 0.5));
+        return (this.attackRange + this.as.get(ActorStatsEnum.Range) * (this.attackType === WeaponAttackTypeEnum.Ranged? 1 : 0.5));
     }
 
     /**
@@ -46,7 +47,7 @@ export class WeaponStats {
      * @returns 最终伤害
      */
     public get finalDamage() {
-        const damage = (this.baseDamage + this.as.elementDamage * this.elementAddDamage + this.as.meleeDamage * this.meleeAddDamage + this.as.rangedDamage * this.rangedAddDamage) * (1 + (this.as.damage / 100));
+        const damage = (this.baseDamage + this.as.get(ActorStatsEnum.Damage) * this.elementAddDamage + this.as.get(ActorStatsEnum.MeleeDamage) * this.meleeAddDamage + this.as.get(ActorStatsEnum.RangedDamage) * this.rangedAddDamage) * (1 + (this.as.get(ActorStatsEnum.Damage) / 100));
         return roundNum(damage, RoundTypeEnum.Floor);
     }
 }
