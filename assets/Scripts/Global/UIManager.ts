@@ -22,6 +22,7 @@ export class UIManager extends Singleton {
 
         this.panels.set(UITypeEnum.UILoading, find("UIRoot/UILoading"));
         this.panels.set(UITypeEnum.UIHeroSelect, find("UIRoot/UIHeroSelect"));
+        this.panels.set(UITypeEnum.UIWeaponSelect, find("UIRoot/UIWeaponSelect"));
         this.panels.set(UITypeEnum.UIStart, find("UIRoot/UIStart"));
         await this.loadPanel();
 

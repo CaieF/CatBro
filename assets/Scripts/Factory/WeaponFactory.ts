@@ -73,4 +73,13 @@ export class WeaponFactory extends Singleton {
                 throw new Error(`武器攻击类型不存在 ${type}`);
         }
     }
+
+    /**
+     * 获取武器配置
+     * @param type 武器类型
+     * @returns 武器配置
+     */
+    public getWeaponConfig(type: WeaponEntityTypeEnum): IWeaponConfig {
+        return this.weaponConfig[type];
+    }
 }

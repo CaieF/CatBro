@@ -1,3 +1,4 @@
+import { UI } from "cc";
 import { ActorEntityTypeEnum } from "../Common";
 import { EventEnum, UITypeEnum } from "../Enum";
 import { IActorConfig } from "../Factory/ActorFactory";
@@ -21,10 +22,12 @@ export class UIHeroSelectCtrl {
         this.uiHeroSelect.showSelectHeroInfo(actorType, actorConfig);
     }
 
-    public selectHero(actorType: ActorEntityTypeEnum) {
+    public selectHero(actorType: ActorEntityTypeEnum, actorConfig: IActorConfig) {
         DataManager.Instance.myPlayerType = actorType;
-        EventManager.Instance.emit(EventEnum.GameStart);
+        // EventManager.Instance.emit(EventEnum.GameStart);
         UIManager.Instance.closePanel(UITypeEnum.UIHeroSelect);
+        // let actorConfig = DataManager.Instance.actorConfigMap.get(actorType);
+        UIManager.Instance.openPanel(UITypeEnum.UIWeaponSelect, true,actorType, actorConfig);
     }
 
     public back() {

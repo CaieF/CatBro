@@ -18,7 +18,8 @@ export abstract class UIBase extends Component {
         }
     }
 
-    public abstract close(...args: any[]): void;
+    public close(...args: any[]): void {
+    }
 }
 
 

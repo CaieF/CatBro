@@ -64,7 +64,7 @@ export class UIHeroGird extends UIBase {
 
     /** 点击事件 */
     private onSelectHero() {
-        this.controller.selectHero(this.actorType);
+        this.controller.selectHero(this.actorType, this.actorConfig);
     }
 }
 

@@ -83,8 +83,8 @@ export enum TexturePathEnum {
     Actor01 = "texture/actor/actor01",
     Actor02 = "texture/actor/actor02",
     Enemy01 = "texture/enemy/enemy01",
-    // Weapon01 = "texture/weapon/weapon01",
-    // Weapon02 = "texture/weapon/weapon02",
+    Weapon01 = "texture/weapon/weapon01",
+    Weapon02 = "texture/weapon/weapon02",
     Bullet01 = "texture/bullet/bullet01",
     Material01 = "texture/material/material01",
     Material02 = "texture/material/material02",
@@ -120,6 +120,7 @@ export enum UITypeEnum {
     UILevelUp = "UILevelUp",
     UILoading = "UILoading",
     UIHeroSelect = "UIHeroSelect",
+    UIWeaponSelect = "UIWeaponSelect",
     UIOver = "UIOver",
     UIStart = "UIStart",
 }
