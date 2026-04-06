@@ -24,6 +24,7 @@ export class UIHeroSelectCtrl {
 
     public selectHero(actorType: ActorEntityTypeEnum, actorConfig: IActorConfig) {
         DataManager.Instance.myPlayerType = actorType;
+        DataManager.Instance.myWeaponList = actorConfig.extraWeapon.map(extraWeapon => extraWeapon.type);
         // EventManager.Instance.emit(EventEnum.GameStart);
         UIManager.Instance.closePanel(UITypeEnum.UIHeroSelect);
         // let actorConfig = DataManager.Instance.actorConfigMap.get(actorType);
@@ -33,5 +34,6 @@ export class UIHeroSelectCtrl {
     public back() {
         UIManager.Instance.closePanel(UITypeEnum.UIHeroSelect);
         UIManager.Instance.openPanel(UITypeEnum.UIStart);
+        DataManager.Instance.myWeaponList = [];
     }
 }

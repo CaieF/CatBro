@@ -34,9 +34,9 @@ export class UIStrengthen extends UIBase {
         const modifier = new ActorStatModifier(this.strengthen.stats as ActorStatsEnum, this.strengthen.modifier.value);
         let actor = DataManager.Instance.myPlayer.getComponent(ActorManager);
         actor.stats.addStrengthenModifier(modifier);
-        if (this.strengthen.stats === ActorStatsEnum.MaxHealth) {
-            EventManager.Instance.emit(EventEnum.UIHPUpdate, actor.stats.currentHealth, actor.stats.get(ActorStatsEnum.MaxHealth));
-        }
+        // if (this.strengthen.stats === ActorStatsEnum.MaxHealth) {
+        //     EventManager.Instance.emit(EventEnum.UIHPUpdate, actor.stats.currentHealth, actor.stats.get(ActorStatsEnum.MaxHealth));
+        // }
         UIManager.Instance.closePanel(UITypeEnum.UILevelUp);
         // director.resume();
     }

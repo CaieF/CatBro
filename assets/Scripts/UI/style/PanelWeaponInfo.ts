@@ -3,11 +3,12 @@ import { ActorEntityTypeEnum, WeaponEntityTypeEnum } from '../../Common';
 import { IActorConfig } from '../../Factory/ActorFactory';
 import DataManager from '../../Global/DataManager';
 import { IWeaponConfig } from '../../Factory/WeaponFactory';
+import { PanelBase } from './PanelBase';
 const { ccclass, property } = _decorator;
 
-/** 选择武器信息面板 */
-@ccclass('PanelSelectWeapon')
-export class PanelSelectWeapon extends Component {
+/** 武器信息面板 */
+@ccclass('PanelWeaponInfo')
+export class PanelWeaponInfo extends PanelBase {
     @property({ type: Label, tooltip: '选择武器名称' })
     private labelWeaponName: Label = null;
 

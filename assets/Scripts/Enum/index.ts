@@ -82,6 +82,7 @@ export enum PrefabPathEnum {
 export enum TexturePathEnum {
     Actor01 = "texture/actor/actor01",
     Actor02 = "texture/actor/actor02",
+    Actor03 = "texture/actor/actor03",
     Enemy01 = "texture/enemy/enemy01",
     Weapon01 = "texture/weapon/weapon01",
     Weapon02 = "texture/weapon/weapon02",
@@ -89,6 +90,7 @@ export enum TexturePathEnum {
     Material01 = "texture/material/material01",
     Material02 = "texture/material/material02",
     Material03 = "texture/material/material03",
+    Prop01 = "texture/prop/prop01",
 }
 
 export enum TextureDirEnum {
@@ -111,6 +113,7 @@ export enum ConfigPathEnum {
     ActorConfig = "config/ActorConfig",
     EnemyConfig = "config/EnemyConfig",
     StrengthenConfig = "config/StrengthenConfig", 
+    PropConfig = "config/PropConfig",
 }
 
 /**
@@ -123,6 +126,7 @@ export enum UITypeEnum {
     UIWeaponSelect = "UIWeaponSelect",
     UIOver = "UIOver",
     UIStart = "UIStart",
+    UIShop = "UIShop",
 }
 
 /**

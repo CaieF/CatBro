@@ -2,11 +2,12 @@ import { _decorator, Component, Label, Node, Sprite } from 'cc';
 import { ActorEntityTypeEnum } from '../../Common';
 import { IActorConfig } from '../../Factory/ActorFactory';
 import DataManager from '../../Global/DataManager';
+import { PanelBase } from './PanelBase';
 const { ccclass, property } = _decorator;
 
 /** 选择角色信息面板 */
 @ccclass('PanelSelectHero')
-export class PanelSelectHero extends Component {
+export class PanelSelectHero extends PanelBase {
     @property({ type: Label, tooltip: '选择角色名称' })
     private labelHeroName: Label = null;
 
@@ -23,6 +24,10 @@ export class PanelSelectHero extends Component {
                 
         for (const modifier of actorConfig.modifiers) {
             this.labelHeroDesc.string += modifier.description + "\n";
+        }
+
+        for (const extraWeapon of actorConfig.extraWeapon) {
+            this.labelHeroDesc.string += extraWeapon.description + "\n";
         }
 
         this.spriteHeroIcon.spriteFrame = DataManager.Instance.textureMap.get(actorType)[0];

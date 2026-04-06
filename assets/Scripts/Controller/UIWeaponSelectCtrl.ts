@@ -25,12 +25,16 @@ export class UIWeaponSelectCtrl {
 
     public selectWeapon(weaponType: WeaponEntityTypeEnum) {
         // DataManager.Instance.myWeaponType = weaponType;
-        EventManager.Instance.emit(EventEnum.GameStart);
+        DataManager.Instance.myWeaponList.push(weaponType);
+        // TODO
+        // EventManager.Instance.emit(EventEnum.GameStart);
         UIManager.Instance.closePanel(UITypeEnum.UIWeaponSelect);
+        UIManager.Instance.openPanel(UITypeEnum.UIShop);
     }
 
     public back() {
         UIManager.Instance.closePanel(UITypeEnum.UIWeaponSelect);
         UIManager.Instance.openPanel(UITypeEnum.UIHeroSelect);
+        // DataManager.Instance.myWeaponList.pop();
     }
 }

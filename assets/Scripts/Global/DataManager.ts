@@ -27,6 +27,7 @@ export default class DataManager extends Singleton {
     public myPlayerId: number = 1;   // 玩家ID
     public myPlayer: Node;   // 玩家节点
     public myPlayerType: ActorEntityTypeEnum = ActorEntityTypeEnum.Actor01;   // 玩家类型
+    public myWeaponList: WeaponEntityTypeEnum[] = [];   // 玩家武器列表
 
     public currentLevel: number = 1;   // 当前波数
 
@@ -312,7 +313,18 @@ export default class DataManager extends Singleton {
         // 重置状态
         this.myPlayer = null;
         this.initState.actors.forEach(actor => {
-            if (actor.id === this.myPlayerId) actor.type = this.myPlayerType;
+            if (actor.id === this.myPlayerId) {
+                actor.type = this.myPlayerType;
+                actor.weaponList = this.myWeaponList.map((weaponType, index) => {
+                    return {
+                        id: index + 1,
+                        type: weaponType,
+                        position: { x: 0, y: 0 },
+                        direction: { x: 0, y: 0 },
+                        bulletType: BulletTypeEnum.Bullet01,
+                    }
+                })
+            }
         })
         this.state = JSON.parse(JSON.stringify(this.initState));
     
@@ -502,7 +514,7 @@ export default class DataManager extends Singleton {
 
         if (this.state.enemies.length >= 100) return;
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 10; i++) {
             const enemy: IEnemy = {
                 id: this.state.nextEnemyId++,
                 type: EnemyEntityTypeEnum.Enemy01,
@@ -512,7 +524,7 @@ export default class DataManager extends Singleton {
             this.state.enemies.push(enemy);
         }
 
-        this.currentLevel += 1;
+        // this.currentLevel += 1;
 
     }
 }

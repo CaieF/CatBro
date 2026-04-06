@@ -18,6 +18,7 @@ import { MaterialManager } from '../Entity/Material/MaterialManager';
 import { UIManager } from '../Global/UIManager';
 import { StrengthenFactory } from '../Factory/StrengthenFactory';
 import EventManager from '../Global/EventManager';
+import { PropFactory } from '../Factory/PropFactory';
 const { ccclass, property } = _decorator;
 
 /**
@@ -125,6 +126,7 @@ export class GameManager extends Component {
         WeaponFactory.Instance.init();
         ActorFactory.Instance.init();
         EnemyFactory.Instance.init();
+        PropFactory.Instance.init();
         StrengthenFactory.Instance.init();
     }
     //#endregion
@@ -165,7 +167,7 @@ export class GameManager extends Component {
         this.refreshTimer += dt;
         if (this.refreshTimer >= this.refreshInterval) {
             this.refreshTimer = 0;
-            DataManager.Instance.refreshEnemies();
+            // DataManager.Instance.refreshEnemies();
         }
     }
 
@@ -294,7 +296,7 @@ export class GameManager extends Component {
         
         // 重新初始化地图和工厂
         this.initMap();
-        this.initFactory();
+        // this.initFactory();
         
         // 6. 恢复更新
         this.shouldUpdate = true;

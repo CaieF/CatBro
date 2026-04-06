@@ -5,6 +5,9 @@
             { "type": "StatModifier", "stat": "maxHealth", "value": 5, "description": "最大生命值+5" },
             { "type": "StatModifier", "stat": "speed", "value": 5, "description": "速度+5%" },
             { "type": "StatModifier", "stat": "harvest", "value": 8, "description": "收获+8" }
+        ],
+        "extraWeapon": [
+            { "type": "Weapon01", "description": "开局额外携带一把木棍" }
         ]
     },
     "Actor02": {
@@ -13,6 +16,20 @@
             { "type": "StatModifier", "stat": "range", "value": 50, "description": "范围+50" },
             { "type": "MultiModifier", "stat": "rangedDamage", "value": 50, "description": "远程伤害修改增加50%" },
             { "type": "MultiModifier", "stat": "maxHealth", "value": -25, "description": "最大生命值修改减少25%" }
+        ],
+        "extraWeapon": [
+            { "type": "Weapon02", "description": "开局额外携带一把手枪" }
+        ]
+    },
+    "Actor03": {
+        "name": "奶牛猫",
+        "modifiers": [
+            { "type": "StatModifier", "stat": "maxHealth", "value": 5, "description": "最大生命值+5" },
+            { "type": "StatModifier", "stat": "speed", "value": 5, "description": "速度+5%" },
+            { "type": "StatModifier", "stat": "harvest", "value": 8, "description": "收获+8" }
+        ],
+        "extraWeapon": [
+            { "type": "Weapon01", "description": "开局额外携带一把木棍" }
         ]
     }
 }

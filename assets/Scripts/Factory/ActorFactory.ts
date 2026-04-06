@@ -1,14 +1,10 @@
 import Singleton from "../Base/Singleton";
-import { ActorEntityTypeEnum, ConfigTypeEnum } from "../Common";
+import { ActorEntityTypeEnum, ConfigTypeEnum, WeaponEntityTypeEnum } from "../Common";
 import { ActorStats, IActorStats } from "../Entity/Actor/ActorStats";
 import { IActorModifier } from "../Entity/Actor/IActorModifier";
 import { ActorStatsEnum, ModifierTypeEnum } from "../Enum";
 import DataManager from "../Global/DataManager";
 import { Debug } from "../Util";
-
-interface IChanges {
-    
-}
 
 export interface IModifier {
     type: ModifierTypeEnum;
@@ -18,9 +14,15 @@ export interface IModifier {
     description: string;
 }
 
+export interface IExtraWeapon {
+    type: WeaponEntityTypeEnum;
+    description: string;
+}
+
 export interface IActorConfig {
     name: string;
     modifiers: IModifier[];
+    extraWeapon: IExtraWeapon[];
 }
 
 const Tag = 'ActorFactory';

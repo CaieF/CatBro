@@ -4,7 +4,7 @@ import { PanelSelectHero } from './style/PanelSelectHero';
 import { ActorEntityTypeEnum, WeaponEntityTypeEnum } from '../Common';
 import { IActorConfig } from '../Factory/ActorFactory';
 import { IWeaponConfig } from '../Factory/WeaponFactory';
-import { PanelSelectWeapon } from './style/PanelSelectWeapon';
+import { PanelWeaponInfo } from './style/PanelWeaponInfo';
 import { UIWeaponSelectCtrl } from '../Controller/UIWeaponSelectCtrl';
 import { UIWeaponGrid } from './UIWeaponGrid';
 const { ccclass, property } = _decorator;
@@ -21,8 +21,8 @@ export class UIWeaponSelect extends UIBase {
     @property({ type: PanelSelectHero, tooltip: '选择角色面板' })
     private panelSelectHero: PanelSelectHero = null;
 
-    @property({ type: PanelSelectWeapon, tooltip: '选择武器面板' })
-    private panelSelectWeapon: PanelSelectWeapon = null;
+    @property({ type: PanelWeaponInfo, tooltip: '武器信息面板' })
+    private panelWeaponInfo: PanelWeaponInfo = null;
 
     private controller: UIWeaponSelectCtrl = null;
     
@@ -46,8 +46,10 @@ export class UIWeaponSelect extends UIBase {
     
     /** 展示武器选择信息 */
     public showSelectWeaponInfo(weaponType: WeaponEntityTypeEnum, weaponConfig: IWeaponConfig) {
-        this.panelSelectWeapon.render(weaponType, weaponConfig);
+        this.panelWeaponInfo.render(weaponType, weaponConfig);
     }
+
+
 
     /** 点击返回 */
     private clickBtnBack() {

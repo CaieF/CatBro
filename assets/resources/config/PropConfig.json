@@ -1,0 +1,9 @@
+{
+    "Prop01": {
+        "name": "道具01",
+        "modifers": [
+            { "type": "StatModifier", "stat": "maxHealth", "value": 5, "description": "最大生命值" },
+            { "type": "StatModifier", "stat": "speed", "value": -5, "description": "速度" }
+        ]
+    }
+}

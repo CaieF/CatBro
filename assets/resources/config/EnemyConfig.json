@@ -1,7 +1,7 @@
 {
     "Enemy01": {
         "name": "鼠小弟",
-        "health": 30,
+        "health": 3,
         "damage": 1,
         "healthLevel": 2,
         "damageLevel": 0.6,

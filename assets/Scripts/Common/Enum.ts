@@ -26,6 +26,7 @@ export enum InputTypeEnum {
 export enum ActorEntityTypeEnum {
     Actor01 = 'Actor01',
     Actor02 = 'Actor02',
+    Actor03 = 'Actor03',
 }
 
 /**
@@ -43,6 +44,8 @@ export enum WeaponEntityTypeEnum {
     Weapon02 = 'Weapon02',
 }
 
+
+
 /**
  * 子弹类型枚举
  */
@@ -50,10 +53,16 @@ export enum BulletTypeEnum {
     Bullet01 = 'Bullet01',
 }
 
+/** 材料类型枚举 */
 export enum MaterialTypeEnum {
     Material01 = 'Material01',
     Material02 = 'Material02',
     Material03 = 'Material03',
+}
+
+/** 道具类型枚举 */
+export enum PropTypeEnum {
+    Prop01 = 'Prop01',
 }
 
 /**
@@ -94,6 +103,7 @@ export enum ConfigTypeEnum {
     ActorConfig = 'ActorConfig',
     EnemyConfig = 'EnemyConfig',
     StrengthenConfig = 'StrengthenConfig',
+    PropConfig = 'PropConfig',
 }
 
 /**

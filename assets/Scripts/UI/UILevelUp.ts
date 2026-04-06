@@ -36,7 +36,7 @@ export class UILevelUp extends UIBase {
         this.uiStats.getComponent(UIStats).close();
     }
 
-    private clickRefresh(): void {
+    clickRefresh(): void {
         // UIManager.Instance.closePanel(UITypeEnum.UILevelUp)
         const am = DataManager.Instance.myPlayer.getComponent(ActorManager);
         if (am.money < 2) {

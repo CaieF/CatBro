@@ -1,6 +1,7 @@
 import { RoundTypeEnum } from "../../Common";
-import { ActorStatsEnum, ModifierTypeEnum } from "../../Enum";
+import { ActorStatsEnum, EventEnum, ModifierTypeEnum } from "../../Enum";
 import { IModifier } from "../../Factory/ActorFactory";
+import EventManager from "../../Global/EventManager";
 import { Debug, roundNum } from "../../Util";
 import { ActorMultiModifier } from "./Modifier";
 import { ActorStatModifier } from "./Modifier/ActorStatModifier";
@@ -93,13 +94,16 @@ export class ActorStats {
         // Object.assign(this.stats, baseStats);
         this.stats = {...baseStats }
 
+        // 应用通用修改
         for (const modifier of this.statModifiers) {
             modifier.apply(this.stats);
         }
+        // 应用百分比修改
         for (const modifier of this.multiModifiers) {
             modifier.apply(this.stats);
         }
         this.currentHealth = this.stats.maxHealth;
+        EventManager.Instance.emit(EventEnum.UIHPUpdate, this.currentHealth, this.get(ActorStatsEnum.MaxHealth));
     }
 
     /** 获取角色属性 */
